@@ -50,15 +50,12 @@ public class WXcontroller {
 	@RequestMapping("/receviceMsgFromWechat")
 	public ModelAndView receviceMsgFromWechat(HttpServletRequest req, HttpServletResponse resp) throws AesException, IOException{
 		
-		log.info("-------111-----------");
 		WXRequestModel wxReq = constructWXRequestModel(req);
 		String reqStr = null;
 		if(null != wxReq.getEchostr() && !"".equalsIgnoreCase(wxReq.getEchostr())){
 			reqStr = wxService.verifyUrl(wxReq);
-			log.info("-------222-----------");
 		}else{
 			reqStr = wxService.decryptWXMsg(wxReq);
-			log.info("-------333-----------");
 		}
 		  
 		resp.getWriter().write(reqStr);

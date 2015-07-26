@@ -7,7 +7,7 @@ public enum WXEventKeyType {
 	SEARCH_BY_AUTHOR("search_by_author",4),
 	SEARCH_BY_OWNER("search_by_owner",5),
 	SCAN_INPUT_BOOK("scan_inut_book",6),
-	SCAN_DESCRIPTION("scan_description", 7);
+	SCAN_DESC("scan_desc", 7);
 	
 	private String name;
 	private int index;

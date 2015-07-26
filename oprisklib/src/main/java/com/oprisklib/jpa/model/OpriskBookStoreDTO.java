@@ -39,6 +39,12 @@ public class OpriskBookStoreDTO {
 	@Column(name="ISBN_NUMBER")
 	private String isbnNumber;
 	
+	@Column(name="BOOK_OWNER")
+	private String bookOwner;
+	
+	@Column(name="IS_IN_LIBRARY")
+	private String isInLibrary;
+	
 	@Column(name="IS_ACTIVE")
 	private String isActive;
 	
@@ -153,6 +159,22 @@ public class OpriskBookStoreDTO {
 
 	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
+	}
+
+	public String getBookOwner() {
+		return bookOwner;
+	}
+
+	public void setBookOwner(String bookOwner) {
+		this.bookOwner = bookOwner;
+	}
+
+	public String getIsInLibrary() {
+		return isInLibrary;
+	}
+
+	public void setIsInLibrary(String isInLibrary) {
+		this.isInLibrary = isInLibrary;
 	}
 	
 	

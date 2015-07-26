@@ -27,6 +27,10 @@ public class WXMsgService implements IWXMsgService {
 	@Resource(name="wxConfigService")
 	private IWXConfigService wxConfigService;
 	
+	@Resource(name="opriskBookStoreService")
+	private OpriskBookStoreService opriskBookStoreService;
+	
+	
 	public String verifyUrl(WXRequestModel wxReq) throws AesException{
 		
 		return verifyUrl(wxReq.getMsgSignature(), wxReq.getTimestamp(), wxReq.getNonce(), wxReq.getEchostr());
@@ -72,10 +76,28 @@ public class WXMsgService implements IWXMsgService {
 						reply ="welcome to oprisk library-scan return:" + wxXML.getScanResult();
 					}
 				}else if(wxXML.getEvent().equalsIgnoreCase(WXEventType.SCANCODE_WAITMSG.getName())){
-					if(wxXML.getEventKey().equalsIgnoreCase(WXEventKeyType.SCAN_BORROW.getName())){
-						reply ="library-scan borrow:" + wxXML.getScanResult();
-					}else if(wxXML.getEventKey().equalsIgnoreCase(WXEventKeyType.SCAN_RETURN.getName())){
-						reply ="library-scan return:" + wxXML.getScanResult();
+					WXEventKeyType eventTkeyType = WXEventKeyType.valueOf(WXEventKeyType.SCAN_BORROW.getName());
+					
+					switch(eventTkeyType){
+						case SCAN_BORROW:   
+							reply ="library-scan borrow:" + wxXML.getScanResult();
+							break;
+						case SCAN_RETURN:
+							reply ="library-scan return:" + wxXML.getScanResult();
+							break;
+						case SEARCH_BY_AUTHOR:
+							reply ="library-scan by author:" + wxXML.getScanResult();
+							break;
+						case SEARCH_BY_OWNER:
+							reply ="library-scan by owner:" + wxXML.getScanResult();
+							break;
+						case SCAN_INPUT_BOOK:
+							opriskBookStoreService.save(wxXML);;
+							reply ="library-scan input book:" + wxXML.getScanResult();
+							break;
+						default:
+							reply ="library-scan no response:" + wxXML.getScanResult();
+							break;
 					}
 				}
 			}

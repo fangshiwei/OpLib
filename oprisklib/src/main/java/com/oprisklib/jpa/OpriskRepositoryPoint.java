@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.oprisklib.jpa.repository.OpriskBookBorrowHistRepository;
-import com.oprisklib.jpa.repository.OpriskBookOwnerMapRepository;
 import com.oprisklib.jpa.repository.OpriskBookStoreRepository;
 import com.oprisklib.jpa.repository.OpriskUserInfoRepository;
 import com.oprisklib.jpa.repository.OpriskWXConfigRepository;
@@ -14,9 +13,6 @@ import com.oprisklib.jpa.repository.OpriskWXGroupSecretRepository;
 public class OpriskRepositoryPoint {
 	@Autowired
 	private OpriskBookBorrowHistRepository opriskBookBorrowHistRep;
-	
-	@Autowired
-	private OpriskBookOwnerMapRepository opriskBookOwnerMapRep;
 	
 	@Autowired
 	private OpriskBookStoreRepository opriskBookStoreRep;
@@ -39,15 +35,6 @@ public class OpriskRepositoryPoint {
 	public void setOpriskBookBorrowHistRep(
 			OpriskBookBorrowHistRepository opriskBookBorrowHistRep) {
 		this.opriskBookBorrowHistRep = opriskBookBorrowHistRep;
-	}
-
-	public OpriskBookOwnerMapRepository getOpriskBookOwnerMapRep() {
-		return opriskBookOwnerMapRep;
-	}
-
-	public void setOpriskBookOwnerMapRep(
-			OpriskBookOwnerMapRepository opriskBookOwnerMapRep) {
-		this.opriskBookOwnerMapRep = opriskBookOwnerMapRep;
 	}
 
 	public OpriskBookStoreRepository getOpriskBookStoreRep() {
