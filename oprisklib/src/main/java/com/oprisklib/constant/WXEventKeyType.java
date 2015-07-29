@@ -6,7 +6,7 @@ public enum WXEventKeyType {
 	SEARCH_BY_BOOKNAME("search_by_bookname", 3),
 	SEARCH_BY_AUTHOR("search_by_author",4),
 	SEARCH_BY_OWNER("search_by_owner",5),
-	SCAN_INPUT_BOOK("scan_inut_book",6),
+	SCAN_INPUT_BOOK("scan_input_book",6),
 	SCAN_DESC("scan_desc", 7);
 	
 	private String name;
@@ -30,4 +30,13 @@ public enum WXEventKeyType {
 		this.index = index;
 	}
 	
+	public static WXEventKeyType getWXEventKeyTypeByName(String name){
+		for (WXEventKeyType key : WXEventKeyType.values()) {
+            if (key.getName().equalsIgnoreCase(name)) {
+                return key;
+            }
+        }
+		
+		return null;
+	}
 }

@@ -76,10 +76,10 @@ public class WXMsgService implements IWXMsgService {
 						reply ="welcome to oprisk library-scan return:" + wxXML.getScanResult();
 					}
 				}else if(wxXML.getEvent().equalsIgnoreCase(WXEventType.SCANCODE_WAITMSG.getName())){
-					WXEventKeyType eventTkeyType = WXEventKeyType.valueOf(WXEventKeyType.SCAN_BORROW.getName());
+					WXEventKeyType eventTkeyType = WXEventKeyType.getWXEventKeyTypeByName(wxXML.getEventKey());
 					
 					switch(eventTkeyType){
-						case SCAN_BORROW:   
+						case SCAN_BORROW:  
 							reply ="library-scan borrow:" + wxXML.getScanResult();
 							break;
 						case SCAN_RETURN:
