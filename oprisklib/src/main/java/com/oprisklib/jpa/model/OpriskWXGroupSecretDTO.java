@@ -113,7 +113,6 @@ public class OpriskWXGroupSecretDTO {
 	public void setAccessTokenUrl(String accessTokenUrl) {
 		this.accessTokenUrl = accessTokenUrl;
 	}
-
 	
 	
 }

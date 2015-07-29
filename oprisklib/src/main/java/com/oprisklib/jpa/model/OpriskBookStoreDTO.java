@@ -30,11 +30,11 @@ public class OpriskBookStoreDTO {
 	@Column(name="EN_AUTHOR")
 	private String enAuthor;
 	
-	@Column(name="PUBLISH_PLACE")
+	@Column(name="PUBLISH_FIRM")
 	private String publishPlace;
 	
-	@Column(name="PUBLIC_VERSION")
-	private String publicVersion;
+	@Column(name="PUBLISH_VERSION")
+	private String publishVersion;
 	
 	@Column(name="PRICE")
 	private Float price;
@@ -108,12 +108,12 @@ public class OpriskBookStoreDTO {
 		this.publishPlace = publishPlace;
 	}
 
-	public String getPublicVersion() {
-		return publicVersion;
+	public String getPublishVersion() {
+		return publishVersion;
 	}
 
-	public void setPublicVersion(String publicVersion) {
-		this.publicVersion = publicVersion;
+	public void setPublishVersion(String publishVersion) {
+		this.publishVersion = publishVersion;
 	}
 
 	public Float getPrice() {
