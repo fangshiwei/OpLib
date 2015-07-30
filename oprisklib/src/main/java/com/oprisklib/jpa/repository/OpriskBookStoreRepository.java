@@ -10,7 +10,7 @@ import com.oprisklib.jpa.model.OpriskBookStoreDTO;
 
 public interface OpriskBookStoreRepository extends JpaRepository<OpriskBookStoreDTO, Integer> {
 	
-	@Query("select u from OpriskBookStoreDTO u where u.isbnNumber = :isbnNumber") 
-	List<OpriskBookStoreDTO> findByISBN(@Param("isbnNumber") String isbnNumber); 
+	@Query("select u from OpriskBookStoreDTO u where u.isbn13 = :isbn or u.isbn10 = :isbn") 
+	List<OpriskBookStoreDTO> findByISBN(@Param("isbn") String isbn); 
 	
 }
