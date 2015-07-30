@@ -10,7 +10,7 @@ import com.oprisklib.jpa.model.OprisklibUserInfoDTO;
 import com.oprisklib.service.IOpriskUserInfoService;
 
 @Service(value="opriskUserInfoService")
-public class OpriskUserInfoService implements IOpriskUserInfoService {
+public class OpriskUserInfoServiceImpl implements IOpriskUserInfoService {
 	
 	@Resource(name="opriskRepositoryPoint")
 	private OpriskRepositoryPoint opriskRepositoryPoint;

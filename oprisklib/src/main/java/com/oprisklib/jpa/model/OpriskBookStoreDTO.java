@@ -1,6 +1,6 @@
 package com.oprisklib.jpa.model;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,6 +8,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 
 
 @Entity
@@ -18,29 +21,47 @@ public class OpriskBookStoreDTO {
 	@Column(name="OPRISK_BOOK_STORE_ID")
 	private Integer opriskBookStoreId;
 	
-	@Column(name="CN_NAME")
-	private String cnName;
+	@Column(name="TITLE")
+	private String title;
 	
-	@Column(name="EN_NAME")
-	private String enName;
+	@Column(name="AUTHOR")
+	private String author;
 	
-	@Column(name="CN_AUTHOR")
-	private String cnAuthor;
+	@Column(name="PUBLISH_DATE")
+	private String publishDate;
 	
-	@Column(name="EN_AUTHOR")
-	private String enAuthor;
+	@Column(name="SUB_TITLE")
+	private String subTitle;
 	
-	@Column(name="PUBLISH_FIRM")
-	private String publishPlace;
+	@Column(name="ORIGIN_TITLE")
+	private String originTitle;
 	
-	@Column(name="PUBLISH_VERSION")
-	private String publishVersion;
+	@Column(name="IMAGE")
+	private String image;
+	
+	@Column(name="TRANSLATOR")
+	private String translator;
+	
+	@Column(name="PAGES")
+	private Integer pages;
+	
+	@Column(name="PUBLISHER")
+	private String publisher;
+	
+	@Column(name="ISBN_10")
+	private String isbn10;
+	
+	@Column(name="ISBN_13")
+	private String isbn13;
+	
+	@Column(name="AUTHOR_INTRO")
+	private String authorIntro;
+	
+	@Column(name="SUMMARY")
+	private String summary;
 	
 	@Column(name="PRICE")
-	private Float price;
-	
-	@Column(name="ISBN_NUMBER")
-	private String isbnNumber;
+	private String price;
 	
 	@Column(name="BOOK_OWNER")
 	private String bookOwner;
@@ -58,7 +79,8 @@ public class OpriskBookStoreDTO {
 	private String createdBy;
 	
 	@Column(name="CREATED_DATE")
-	private Date createdDate;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Timestamp createdDate;
 
 	public Integer getOpriskBookStoreId() {
 		return opriskBookStoreId;
@@ -67,69 +89,117 @@ public class OpriskBookStoreDTO {
 	public void setOpriskBookStoreId(Integer opriskBookStoreId) {
 		this.opriskBookStoreId = opriskBookStoreId;
 	}
-
-	public String getCnName() {
-		return cnName;
+	
+	public String getAuthor() {
+		return author;
 	}
 
-	public void setCnName(String cnName) {
-		this.cnName = cnName;
+	public void setAuthor(String author) {
+		this.author = author;
 	}
 
-	public String getEnName() {
-		return enName;
+	public String getPublishDate() {
+		return publishDate;
 	}
 
-	public void setEnName(String enName) {
-		this.enName = enName;
+	public void setPublishDate(String publishDate) {
+		this.publishDate = publishDate;
 	}
 
-	public String getCnAuthor() {
-		return cnAuthor;
+	public String getTitle() {
+		return title;
 	}
 
-	public void setCnAuthor(String cnAuthor) {
-		this.cnAuthor = cnAuthor;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
-	public String getEnAuthor() {
-		return enAuthor;
+	public String getSubTitle() {
+		return subTitle;
 	}
 
-	public void setEnAuthor(String enAuthor) {
-		this.enAuthor = enAuthor;
+	public void setSubTitle(String subTitle) {
+		this.subTitle = subTitle;
 	}
 
-	public String getPublishPlace() {
-		return publishPlace;
+	public String getOriginTitle() {
+		return originTitle;
 	}
 
-	public void setPublishPlace(String publishPlace) {
-		this.publishPlace = publishPlace;
+	public void setOriginTitle(String originTitle) {
+		this.originTitle = originTitle;
 	}
 
-	public String getPublishVersion() {
-		return publishVersion;
+	public String getImage() {
+		return image;
 	}
 
-	public void setPublishVersion(String publishVersion) {
-		this.publishVersion = publishVersion;
+	public void setImage(String image) {
+		this.image = image;
 	}
 
-	public Float getPrice() {
+	public String getTranslator() {
+		return translator;
+	}
+
+	public void setTranslator(String translator) {
+		this.translator = translator;
+	}
+
+	public Integer getPages() {
+		return pages;
+	}
+
+	public void setPages(Integer pages) {
+		this.pages = pages;
+	}
+
+	public String getPublisher() {
+		return publisher;
+	}
+
+	public void setPublisher(String publisher) {
+		this.publisher = publisher;
+	}
+
+	public String getIsbn10() {
+		return isbn10;
+	}
+
+	public void setIsbn10(String isbn10) {
+		this.isbn10 = isbn10;
+	}
+
+	public String getIsbn13() {
+		return isbn13;
+	}
+
+	public void setIsbn13(String isbn13) {
+		this.isbn13 = isbn13;
+	}
+	
+	public String getAuthorIntro() {
+		return authorIntro;
+	}
+
+	public void setAuthorIntro(String authorIntro) {
+		this.authorIntro = authorIntro;
+	}
+
+	public String getSummary() {
+		return summary;
+	}
+
+	public void setSummary(String summary) {
+		this.summary = summary;
+	}
+
+	public String getPrice() {
 		return price;
 	}
 
-	public void setPrice(Float price) {
+	public void setPrice(String price) {
 		this.price = price;
-	}
-
-	public String getIsbnNumber() {
-		return isbnNumber;
-	}
-
-	public void setIsbnNumber(String isbnNumber) {
-		this.isbnNumber = isbnNumber;
 	}
 
 	public String getIsActive() {
@@ -156,11 +226,11 @@ public class OpriskBookStoreDTO {
 		this.createdBy = createdBy;
 	}
 
-	public Date getCreatedDate() {
+	public Timestamp getCreatedDate() {
 		return createdDate;
 	}
 
-	public void setCreatedDate(Date createdDate) {
+	public void setCreatedDate(Timestamp createdDate) {
 		this.createdDate = createdDate;
 	}
 

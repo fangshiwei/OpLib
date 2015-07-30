@@ -22,13 +22,13 @@ import com.qq.weixin.mp.aes.AesException;
 import com.qq.weixin.mp.aes.WXBizMsgCrypt;
 
 @Service(value="wxService")
-public class WXMsgService implements IWXMsgService {
+public class WXMsgServiceImpl implements IWXMsgService {
 	
 	@Resource(name="wxConfigService")
 	private IWXConfigService wxConfigService;
 	
 	@Resource(name="opriskBookStoreService")
-	private OpriskBookStoreService opriskBookStoreService;
+	private OpriskBookStoreServiceImpl opriskBookStoreService;
 	
 	
 	public String verifyUrl(WXRequestModel wxReq) throws AesException{
@@ -92,8 +92,8 @@ public class WXMsgService implements IWXMsgService {
 							reply ="library-scan by owner:" + wxXML.getScanResult();
 							break;
 						case SCAN_INPUT_BOOK:
-							opriskBookStoreService.save(wxXML);;
-							reply ="library-scan input book:" + wxXML.getScanResult();
+							String bookTitle = opriskBookStoreService.save(wxXML);;
+							reply ="library-scan input book:" + bookTitle +", ISBN:"+wxXML.getScanResult();
 							break;
 						default:
 							reply ="library-scan no response:" + wxXML.getScanResult();

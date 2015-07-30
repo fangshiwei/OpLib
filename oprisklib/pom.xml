@@ -245,6 +245,12 @@
 			<version>1.8.1.RELEASE</version>
 		</dependency>
 		
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20140107</version>
+		</dependency>
+		
 	</dependencies>
 			
 

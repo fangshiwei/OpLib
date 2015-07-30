@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.oprisklib.common.model.WXRequestModel;
-import com.oprisklib.service.impl.WXMsgService;
+import com.oprisklib.service.impl.WXMsgServiceImpl;
 import com.qq.weixin.mp.aes.AesException;
 
 @Controller
@@ -23,7 +23,7 @@ public class WXcontroller {
 	Logger log = Logger.getLogger(WXcontroller.class);
 	
 	@Resource(name="wxService")
-	private WXMsgService wxService;
+	private WXMsgServiceImpl wxService;
 	
 	@RequestMapping("/getWXMenu")
 	public ModelAndView getWXMenu(HttpServletRequest req, HttpServletResponse resp){

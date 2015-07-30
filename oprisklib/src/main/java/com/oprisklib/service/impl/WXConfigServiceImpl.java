@@ -16,7 +16,7 @@ import com.qq.weixin.mp.aes.AesException;
 import com.qq.weixin.mp.aes.WXBizMsgCrypt;
 
 @Service("wxConfigService")
-public class WXConfigService implements IWXConfigService{
+public class WXConfigServiceImpl implements IWXConfigService{
 	
 	@Resource(name="opriskRepositoryPoint")
 	private OpriskRepositoryPoint opriskRepositoryPoint;

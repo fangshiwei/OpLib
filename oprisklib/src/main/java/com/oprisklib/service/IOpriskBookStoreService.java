@@ -7,5 +7,5 @@ import com.oprisklib.jpa.model.OpriskBookStoreDTO;
 
 public interface IOpriskBookStoreService {
 	List<OpriskBookStoreDTO> findByISBN(String isbnNumber); 
-	void save(WXReceiveXmlModel wxXML);
+	String save(WXReceiveXmlModel wxXML) throws Exception;
 }

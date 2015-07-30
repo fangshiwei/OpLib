@@ -17,6 +17,9 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
 public class HttpsUtils {
 
 		
@@ -39,6 +42,34 @@ public class HttpsUtils {
         public boolean verify(String hostname, SSLSession session) {
             return true;
         }
+    }
+    
+    
+    public static JSONObject get(String url) throws IOException, KeyManagementException, NoSuchAlgorithmException{
+    	JSONObject response = null;  
+    	
+    	 SSLContext sc = SSLContext.getInstance("SSL");
+         sc.init(null, new TrustManager[] { new TrustAnyTrustManager() },
+                 new java.security.SecureRandom());
+  
+         URL console = new URL(url);
+         HttpsURLConnection conn = (HttpsURLConnection) console.openConnection();
+         conn.setSSLSocketFactory(sc.getSocketFactory());
+         conn.setHostnameVerifier(new TrustAnyHostnameVerifier());
+         conn.setDoOutput(true);
+         conn.connect();
+         DataOutputStream out = new DataOutputStream(conn.getOutputStream());
+         out.flush();
+         out.close();
+         
+         InputStream is = conn.getInputStream();
+         
+         response = new JSONObject(new JSONTokener(is));  
+    	
+    	
+    	return response;
+    	
+    	
     }
     
     public static byte[] post(String url, String content) throws KeyManagementException, NoSuchAlgorithmException, IOException{
