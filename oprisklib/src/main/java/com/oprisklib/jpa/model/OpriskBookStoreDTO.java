@@ -1,6 +1,7 @@
 package com.oprisklib.jpa.model;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -80,7 +81,7 @@ public class OpriskBookStoreDTO {
 	
 	@Column(name="CREATED_DATE")
 	@Temporal(TemporalType.TIMESTAMP)
-	private Timestamp createdDate;
+	private Date createdDate;
 
 	public Integer getOpriskBookStoreId() {
 		return opriskBookStoreId;
@@ -225,12 +226,13 @@ public class OpriskBookStoreDTO {
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
-
-	public Timestamp getCreatedDate() {
+	
+		
+	public Date getCreatedDate() {
 		return createdDate;
 	}
 
-	public void setCreatedDate(Timestamp createdDate) {
+	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
 	}
 
