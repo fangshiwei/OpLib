@@ -35,7 +35,7 @@ public class OpriskBookStoreServiceImpl implements IOpriskBookStoreService {
 	@Transactional
 	public String save(WXReceiveXmlModel wxXML) throws Exception {
 		OpriskBookStoreDTO bookStore = null;
-		String isbn = wxXML.getScanResult().substring(wxXML.getScanResult().indexOf(","));
+		String isbn = wxXML.getScanResult().substring(wxXML.getScanResult().indexOf(",")+1);
 		log.info("isbn:" + isbn);
 		JSONObject json = doubanService.getBookInfoByIsbn(isbn);
 		bookStore = parseJsonToBookStore(json, "oprisk");
