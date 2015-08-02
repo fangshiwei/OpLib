@@ -30,6 +30,7 @@ public class WXMsgServiceImpl implements IWXMsgService {
 	@Resource(name="opriskBookStoreService")
 	private OpriskBookStoreServiceImpl opriskBookStoreService;
 	
+	private static String msgId = "";
 	
 	public String verifyUrl(WXRequestModel wxReq) throws AesException{
 		
@@ -66,40 +67,11 @@ public class WXMsgServiceImpl implements IWXMsgService {
 		try {
 			
 			WXReceiveXmlModel wxXML = this.parseXML(responseMsg);
-			if(wxXML.getMsgType().equalsIgnoreCase(WXMsgType.TEXT.getName())){
-				reply = "welcome to oprisk library::--" + wxXML.getContent();
-			}else if(wxXML.getMsgType().equalsIgnoreCase(WXMsgType.EVENT.getName())){
-				if(wxXML.getEvent().equalsIgnoreCase(WXEventType.SCANCODE_PUSH.getName())){
-					if(wxXML.getEventKey().equalsIgnoreCase(WXEventKeyType.SCAN_BORROW.getName())){
-						reply ="welcome to oprisk library-scan borrow:" + wxXML.getScanCodeInfo();
-					}else if(wxXML.getEventKey().equalsIgnoreCase(WXEventKeyType.SCAN_RETURN.getName())){
-						reply ="welcome to oprisk library-scan return:" + wxXML.getScanResult();
-					}
-				}else if(wxXML.getEvent().equalsIgnoreCase(WXEventType.SCANCODE_WAITMSG.getName())){
-					WXEventKeyType eventTkeyType = WXEventKeyType.getWXEventKeyTypeByName(wxXML.getEventKey());
-					
-					switch(eventTkeyType){
-						case SCAN_BORROW:  
-							reply ="library-scan borrow:" + wxXML.getScanResult();
-							break;
-						case SCAN_RETURN:
-							reply ="library-scan return:" + wxXML.getScanResult();
-							break;
-						case SEARCH_BY_AUTHOR:
-							reply ="library-scan by author:" + wxXML.getScanResult();
-							break;
-						case SEARCH_BY_OWNER:
-							reply ="library-scan by owner:" + wxXML.getScanResult();
-							break;
-						case SCAN_INPUT_BOOK:
-							String bookTitle = opriskBookStoreService.save(wxXML);;
-							reply ="library-scan input book:" + bookTitle +", ISBN:"+wxXML.getScanResult();
-							break;
-						default:
-							reply ="library-scan no response:" + wxXML.getScanResult();
-							break;
-					}
-				}
+			if(msgId.equals(wxXML.getMsgId())){
+				reply = "inputing, please wait...";
+			}else{
+				msgId = wxXML.getMsgId();
+				reply = parseReply(reply, wxXML);
 			}
 			
 			reply = formatXmlAnswer(wxXML.getFromUserName(), wxXML.getToUserName(),reply, String.valueOf(System.currentTimeMillis()));
@@ -108,6 +80,52 @@ public class WXMsgServiceImpl implements IWXMsgService {
 			e.printStackTrace();
 		}
 		
+		return reply;
+	}
+
+	/**
+	 * @param reply
+	 * @param wxXML
+	 * @return
+	 * @throws Exception
+	 */
+	private String parseReply(String reply, WXReceiveXmlModel wxXML)
+			throws Exception {
+		if(wxXML.getMsgType().equalsIgnoreCase(WXMsgType.TEXT.getName())){
+			reply = "welcome to oprisk library::--" + wxXML.getContent();
+		}else if(wxXML.getMsgType().equalsIgnoreCase(WXMsgType.EVENT.getName())){
+			if(wxXML.getEvent().equalsIgnoreCase(WXEventType.SCANCODE_PUSH.getName())){
+				if(wxXML.getEventKey().equalsIgnoreCase(WXEventKeyType.SCAN_BORROW.getName())){
+					reply ="welcome to oprisk library-scan borrow:" + wxXML.getScanCodeInfo();
+				}else if(wxXML.getEventKey().equalsIgnoreCase(WXEventKeyType.SCAN_RETURN.getName())){
+					reply ="welcome to oprisk library-scan return:" + wxXML.getScanResult();
+				}
+		}else if(wxXML.getEvent().equalsIgnoreCase(WXEventType.SCANCODE_WAITMSG.getName())){
+			WXEventKeyType eventTkeyType = WXEventKeyType.getWXEventKeyTypeByName(wxXML.getEventKey());
+			
+			switch(eventTkeyType){
+				case SCAN_BORROW:  
+					reply ="library-scan borrow:" + wxXML.getScanResult();
+					break;
+				case SCAN_RETURN:
+					reply ="library-scan return:" + wxXML.getScanResult();
+					break;
+				case SEARCH_BY_AUTHOR:
+					reply ="library-scan by author:" + wxXML.getScanResult();
+					break;
+				case SEARCH_BY_OWNER:
+					reply ="library-scan by owner:" + wxXML.getScanResult();
+					break;
+				case SCAN_INPUT_BOOK:
+					String bookTitle = opriskBookStoreService.save(wxXML);;
+					reply ="书籍:" + bookTitle +", ISBN:"+wxXML.getScanResult() +", 已经录入";
+					break;
+				default:
+					reply ="library-scan no response:" + wxXML.getScanResult();
+					break;
+				}
+			}
+		}
 		return reply;
 	}
 	

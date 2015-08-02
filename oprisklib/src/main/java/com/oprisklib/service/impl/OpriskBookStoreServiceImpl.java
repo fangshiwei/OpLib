@@ -49,12 +49,12 @@ public class OpriskBookStoreServiceImpl implements IOpriskBookStoreService {
 		
 		OpriskBookStoreDTO bookStore = new OpriskBookStoreDTO();
 		bookStore.setTitle(json.getString("title"));
-		bookStore.setAuthor(json.getString("author"));
+		bookStore.setAuthor(json.get("author").toString());
 		bookStore.setPublishDate(json.getString("pubdate"));
 		bookStore.setOriginTitle(json.getString("origin_title"));
 		bookStore.setImage(json.getString("image"));
-		bookStore.setTranslator(json.getString("translator"));
-		bookStore.setPages(Integer.valueOf(json.getString("translator")));
+		bookStore.setTranslator(json.get("translator").toString());
+		bookStore.setPages(Integer.valueOf(json.getString("pages")));
 		bookStore.setPublisher(json.getString("publisher"));
 		bookStore.setIsbn10(json.getString("isbn10"));
 		bookStore.setIsbn13(json.getString("isbn13"));
