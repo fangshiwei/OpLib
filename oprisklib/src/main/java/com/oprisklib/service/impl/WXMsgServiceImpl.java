@@ -30,7 +30,7 @@ public class WXMsgServiceImpl implements IWXMsgService {
 	@Resource(name="opriskBookStoreService")
 	private OpriskBookStoreServiceImpl opriskBookStoreService;
 	
-	private static String msgId = "";
+	private static String createdTime = "";
 	
 	public String verifyUrl(WXRequestModel wxReq) throws AesException{
 		
@@ -67,12 +67,12 @@ public class WXMsgServiceImpl implements IWXMsgService {
 		try {
 			
 			WXReceiveXmlModel wxXML = this.parseXML(responseMsg);
-			if(msgId.equals(wxXML.getMsgId())){
+			if(createdTime.equals(wxXML.getCreateTime())){
 				reply = "inputing, please wait...";
 			}else{
-				msgId = wxXML.getMsgId();
+				createdTime = wxXML.getCreateTime();
 				reply = parseReply(reply, wxXML);
-			}
+			} 
 			
 			reply = formatXmlAnswer(wxXML.getFromUserName(), wxXML.getToUserName(),reply, String.valueOf(System.currentTimeMillis()));
 			

@@ -9,7 +9,7 @@ import java.security.NoSuchAlgorithmException;
 import org.json.JSONObject;
 import org.junit.Test;
 
-public class HtppsUtilsTest {
+public class HttpsUtilsTest {
 
 	@Test
 	public void testGet(){
