@@ -72,6 +72,31 @@ public class HttpsUtils {
     	
     }
     
+    public static JSONObject postJson(String url, String content) throws Exception{
+    	JSONObject response = null;  
+    	
+   	 SSLContext sc = SSLContext.getInstance("SSL");
+        sc.init(null, new TrustManager[] { new TrustAnyTrustManager() },
+                new java.security.SecureRandom());
+ 
+        URL console = new URL(url);
+        HttpsURLConnection conn = (HttpsURLConnection) console.openConnection();
+        conn.setSSLSocketFactory(sc.getSocketFactory());
+        conn.setHostnameVerifier(new TrustAnyHostnameVerifier());
+        conn.setDoOutput(true);
+        conn.connect();
+        DataOutputStream out = new DataOutputStream(conn.getOutputStream());
+        out.write(content.getBytes());
+        out.flush();
+        out.close();
+        
+        InputStream is = conn.getInputStream();
+        
+        response = new JSONObject(new JSONTokener(is));  
+        
+        return response;
+    }
+    
     public static byte[] post(String url, String content) throws KeyManagementException, NoSuchAlgorithmException, IOException{
     	return post(url, content, "UTF-8");
     }

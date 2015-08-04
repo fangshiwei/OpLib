@@ -9,8 +9,10 @@ import javax.annotation.Resource;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
+import com.oprisklib.common.model.WXAccessToken;
 import com.oprisklib.common.model.WXReceiveXmlModel;
 import com.oprisklib.common.model.WXRequestModel;
 import com.oprisklib.constant.WXEventKeyType;
@@ -18,6 +20,7 @@ import com.oprisklib.constant.WXEventType;
 import com.oprisklib.constant.WXMsgType;
 import com.oprisklib.service.IWXConfigService;
 import com.oprisklib.service.IWXMsgService;
+import com.oprisklib.util.HttpsUtils;
 import com.qq.weixin.mp.aes.AesException;
 import com.qq.weixin.mp.aes.WXBizMsgCrypt;
 
@@ -174,4 +177,27 @@ public class WXMsgServiceImpl implements IWXMsgService {
     }  
 	
 	
+    public JSONObject sendMsgByToken(String msg, String groupName) throws Exception{
+    	String url = "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=:access_token";
+    	WXAccessToken accessToken = this.wxConfigService.getAccessTokenByGroup(groupName);
+    	url = url.replace(":access_token", accessToken.getAccessToken());
+    	
+    	JSONObject json = HttpsUtils.postJson(url,  mokeMsg());
+    	
+    	return json;
+    	
+    }
+    
+    private String mokeMsg(){
+    	String msg = "{ "+
+    		  " \"touser\": \"fsw\", " +
+    		  " \"msgtype\": \"text\", "+
+    		  " \"agentid\": \"6\", "+
+    		  " \"text\": {  "+
+    		  "     \"content\": \"test...........\" "+
+    		  " }, " +
+    		"}";
+    	
+    	return msg;
+    }
 }
