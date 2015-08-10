@@ -1,5 +1,6 @@
 package com.oprisklib.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -11,14 +12,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.oprisklib.common.model.WXReceiveXmlModel;
 import com.oprisklib.jpa.OpriskRepositoryPoint;
+import com.oprisklib.jpa.model.OpriskBookBorrowHistDTO;
 import com.oprisklib.jpa.model.OpriskBookStoreDTO;
 import com.oprisklib.service.IDoubanService;
-import com.oprisklib.service.IOpriskBookStoreService;
+import com.oprisklib.service.IOpriskBookService;
 
-@Service(value="opriskBookStoreService")
-public class OpriskBookStoreServiceImpl implements IOpriskBookStoreService {
+@Service(value="opriskBookService")
+public class OpriskBookServiceImpl implements IOpriskBookService {
 	
-	Logger log = Logger.getLogger(OpriskBookStoreServiceImpl.class);
+	Logger log = Logger.getLogger(OpriskBookServiceImpl.class);
 	
 	@Resource(name="opriskRepositoryPoint")
 	private OpriskRepositoryPoint opriskRepositoryPoint;
@@ -29,6 +31,59 @@ public class OpriskBookStoreServiceImpl implements IOpriskBookStoreService {
 	@Override
 	public List<OpriskBookStoreDTO> findByISBN(String isbnNumber) {
 		return this.opriskRepositoryPoint.getOpriskBookStoreRep().findByISBN(isbnNumber);
+	}
+	
+	@Override
+	@Transactional
+	public String borrowBookByISBN(String isbnNumber, String borrowBy){
+		String isInLibrary = "Y";
+		OpriskBookStoreDTO book = this.opriskRepositoryPoint.getOpriskBookStoreRep().findOneByISBNAndLibraryFlag(isbnNumber, isInLibrary);
+		if(null != book){
+			book.setIsInLibrary("N");
+			saveBorrowHist(borrowBy, book);
+			//this.opriskRepositoryPoint.getOpriskBookStoreRep().save(book);
+			
+			return "Book:" + book.getTitle() +" borrow success!";
+		}else{
+			return "there is no book in library!";
+		}
+	}
+	
+	@Override
+	@Transactional
+	public String returnBookByISBN(String isbnNumber, String borrowBy){
+		OpriskBookBorrowHistDTO borrowHistDTO = this.opriskRepositoryPoint.getOpriskBookBorrowHistRep().findBorrowBookByISBNAndBorrowBy(isbnNumber, borrowBy);
+		if(null != borrowHistDTO){
+			borrowHistDTO.getBookStore().setIsInLibrary("Y");
+			borrowHistDTO.setReturnDate(new Date(System.currentTimeMillis()));
+			this.opriskRepositoryPoint.getOpriskBookBorrowHistRep().save(borrowHistDTO);
+			return "Book:"+borrowHistDTO.getBookStore().getTitle()+"return success";
+		}else{
+			return "No record found";
+		}
+				
+	}
+
+	/**
+	 * @param borrowBy
+	 * @param book
+	 */
+	private void saveBorrowHist(String borrowBy, OpriskBookStoreDTO book) {
+		OpriskBookBorrowHistDTO borrowHistDTO = new OpriskBookBorrowHistDTO();
+		
+		borrowHistDTO.setBookStore(book);
+		borrowHistDTO.setBorrowDate(new Date(System.currentTimeMillis()));
+		borrowHistDTO.setCreatedBy(borrowBy);
+		borrowHistDTO.setCreatedDate(new Date(System.currentTimeMillis()));
+		this.opriskRepositoryPoint.getOpriskBookBorrowHistRep().save(borrowHistDTO);
+	}
+	
+	
+	
+	
+	public OpriskBookStoreDTO save(OpriskBookStoreDTO book){
+		book.setIsInLibrary("N");
+		return this.opriskRepositoryPoint.getOpriskBookStoreRep().save(book);
 	}
 
 	@Override

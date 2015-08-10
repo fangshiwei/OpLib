@@ -30,8 +30,8 @@ public class WXMsgServiceImpl implements IWXMsgService {
 	@Resource(name="wxConfigService")
 	private IWXConfigService wxConfigService;
 	
-	@Resource(name="opriskBookStoreService")
-	private OpriskBookStoreServiceImpl opriskBookStoreService;
+	@Resource(name="opriskBookService")
+	private OpriskBookServiceImpl opriskBookService;
 	
 	private static String createdTime = "";
 	
@@ -98,20 +98,16 @@ public class WXMsgServiceImpl implements IWXMsgService {
 			reply = "welcome to oprisk library::--" + wxXML.getContent();
 		}else if(wxXML.getMsgType().equalsIgnoreCase(WXMsgType.EVENT.getName())){
 			if(wxXML.getEvent().equalsIgnoreCase(WXEventType.SCANCODE_PUSH.getName())){
-				if(wxXML.getEventKey().equalsIgnoreCase(WXEventKeyType.SCAN_BORROW.getName())){
-					reply ="welcome to oprisk library-scan borrow:" + wxXML.getScanCodeInfo();
-				}else if(wxXML.getEventKey().equalsIgnoreCase(WXEventKeyType.SCAN_RETURN.getName())){
-					reply ="welcome to oprisk library-scan return:" + wxXML.getScanResult();
-				}
+				reply ="library-scan push no response:" + wxXML.getScanResult();
 		}else if(wxXML.getEvent().equalsIgnoreCase(WXEventType.SCANCODE_WAITMSG.getName())){
 			WXEventKeyType eventTkeyType = WXEventKeyType.getWXEventKeyTypeByName(wxXML.getEventKey());
-			
+			String isbn = wxXML.getScanResult().substring(wxXML.getScanResult().indexOf(",")+1);
 			switch(eventTkeyType){
-				case SCAN_BORROW:  
-					reply ="library-scan borrow:" + wxXML.getScanResult();
+				case SCAN_BORROW: 
+					reply ="library-scan borrow:"  + this.opriskBookService.borrowBookByISBN(isbn, wxXML.getFromUserName());
 					break;
 				case SCAN_RETURN:
-					reply ="library-scan return:" + wxXML.getScanResult();
+					reply ="library-scan return:" + this.opriskBookService.returnBookByISBN(isbn, wxXML.getFromUserName());
 					break;
 				case SEARCH_BY_AUTHOR:
 					reply ="library-scan by author:" + wxXML.getScanResult();
@@ -120,7 +116,7 @@ public class WXMsgServiceImpl implements IWXMsgService {
 					reply ="library-scan by owner:" + wxXML.getScanResult();
 					break;
 				case SCAN_INPUT_BOOK:
-					String bookTitle = opriskBookStoreService.save(wxXML);;
+					String bookTitle = opriskBookService.save(wxXML);;
 					reply ="书籍:" + bookTitle +", ISBN:"+wxXML.getScanResult() +", 已经录入";
 					break;
 				default:
