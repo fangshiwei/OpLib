@@ -37,8 +37,9 @@ public class OpriskBookServiceImpl implements IOpriskBookService {
 	@Transactional
 	public String borrowBookByISBN(String isbnNumber, String borrowBy){
 		String isInLibrary = "Y";
-		OpriskBookStoreDTO book = this.opriskRepositoryPoint.getOpriskBookStoreRep().findOneByISBNAndLibraryFlag(isbnNumber, isInLibrary);
-		if(null != book){
+		List<OpriskBookStoreDTO> bookList = this.opriskRepositoryPoint.getOpriskBookStoreRep().findByISBNAndLibraryFlag(isbnNumber, isInLibrary);
+		if(null != bookList && bookList.size() > 0){
+			OpriskBookStoreDTO book = bookList.get(0);
 			book.setIsInLibrary("N");
 			saveBorrowHist(borrowBy, book);
 			//this.opriskRepositoryPoint.getOpriskBookStoreRep().save(book);

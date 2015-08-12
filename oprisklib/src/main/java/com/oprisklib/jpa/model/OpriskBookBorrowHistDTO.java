@@ -2,6 +2,7 @@ package com.oprisklib.jpa.model;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,7 +10,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -22,14 +22,13 @@ public class OpriskBookBorrowHistDTO {
 	@Column(name="OPRISK_BOOK_BORROW_HIST_ID")
 	private Integer opriskBookBorrowHistId;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	/*@ManyToOne(fetch = FetchType.LAZY)
 	@JoinTable(name = "OPRISK_USER_INFO_ID", 
 	        joinColumns = @JoinColumn(name = "OPRISK_USER_INFO_ID"))
-	private OprisklibUserInfoDTO userInfo;
+	private OprisklibUserInfoDTO userInfo;*/
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinTable(name = "OPRISK_BOOK_STORE_ID", 
-	        joinColumns = @JoinColumn(name = "OPRISK_BOOK_STORE_ID"))
+	@ManyToOne(cascade = { CascadeType.ALL }, targetEntity=OpriskBookStoreDTO.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "OPRISK_BOOK_STORE_ID", updatable=true)
 	private OpriskBookStoreDTO bookStore;
 
 	@Column(name="BORROW_DATE")
@@ -55,13 +54,13 @@ public class OpriskBookBorrowHistDTO {
 		this.opriskBookBorrowHistId = opriskBookBorrowHistId;
 	}
 
-	public OprisklibUserInfoDTO getUserInfo() {
+	/*public OprisklibUserInfoDTO getUserInfo() {
 		return userInfo;
 	}
 
 	public void setUserInfo(OprisklibUserInfoDTO userInfo) {
 		this.userInfo = userInfo;
-	}
+	}*/
 
 	public OpriskBookStoreDTO getBookStore() {
 		return bookStore;
