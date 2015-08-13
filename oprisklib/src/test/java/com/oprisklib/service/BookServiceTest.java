@@ -27,8 +27,16 @@ public class BookServiceTest extends BaseServiceTest {
 		String borrowBy = "fsw";
 		String isbnNumber ="9787111423140";
 		String msg = opriskBookService.borrowBookByISBN(isbnNumber, borrowBy);
-		System.out.println(msg.substring(msg.lastIndexOf(" "), msg.length()-1));
-		Assert.assertEquals("success", msg.substring(msg.lastIndexOf(" "), msg.length()-1));
+		System.out.println(msg.substring(msg.lastIndexOf(" ")+1, msg.length()-1));
+		Assert.assertEquals("success", msg.substring(msg.lastIndexOf(" ")+1, msg.length()-1));
 	}
 	
+	
+	
+	@Test
+	public void testFetchAllBookList(){
+		String booklist = this.opriskBookService.fetchAllBookList();
+		System.out.println(booklist);
+		Assert.assertTrue(!"".equals(booklist));
+	}
 }

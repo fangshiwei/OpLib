@@ -18,6 +18,7 @@ import com.oprisklib.common.model.WXRequestModel;
 import com.oprisklib.constant.WXEventKeyType;
 import com.oprisklib.constant.WXEventType;
 import com.oprisklib.constant.WXMsgType;
+import com.oprisklib.service.IOpriskBookService;
 import com.oprisklib.service.IWXConfigService;
 import com.oprisklib.service.IWXMsgService;
 import com.oprisklib.util.HttpsUtils;
@@ -31,7 +32,7 @@ public class WXMsgServiceImpl implements IWXMsgService {
 	private IWXConfigService wxConfigService;
 	
 	@Resource(name="opriskBookService")
-	private OpriskBookServiceImpl opriskBookService;
+	private IOpriskBookService opriskBookService;
 	
 	private static String createdTime = "";
 	
@@ -94,37 +95,132 @@ public class WXMsgServiceImpl implements IWXMsgService {
 	 */
 	private String parseReply(String reply, WXReceiveXmlModel wxXML)
 			throws Exception {
-		if(wxXML.getMsgType().equalsIgnoreCase(WXMsgType.TEXT.getName())){
-			reply = "welcome to oprisk library::--" + wxXML.getContent();
-		}else if(wxXML.getMsgType().equalsIgnoreCase(WXMsgType.EVENT.getName())){
-			if(wxXML.getEvent().equalsIgnoreCase(WXEventType.SCANCODE_PUSH.getName())){
-				reply ="library-scan push no response:" + wxXML.getScanResult();
-		}else if(wxXML.getEvent().equalsIgnoreCase(WXEventType.SCANCODE_WAITMSG.getName())){
-			WXEventKeyType eventTkeyType = WXEventKeyType.getWXEventKeyTypeByName(wxXML.getEventKey());
-			String isbn = wxXML.getScanResult().substring(wxXML.getScanResult().indexOf(",")+1);
-			switch(eventTkeyType){
-				case SCAN_BORROW: 
-					reply ="library-scan borrow:"  + this.opriskBookService.borrowBookByISBN(isbn, wxXML.getFromUserName());
-					break;
-				case SCAN_RETURN:
-					reply ="library-scan return:" + this.opriskBookService.returnBookByISBN(isbn, wxXML.getFromUserName());
-					break;
-				case SEARCH_BY_AUTHOR:
-					reply ="library-scan by author:" + wxXML.getScanResult();
-					break;
-				case SEARCH_BY_OWNER:
-					reply ="library-scan by owner:" + wxXML.getScanResult();
-					break;
-				case SCAN_INPUT_BOOK:
-					String bookTitle = opriskBookService.save(wxXML);;
-					reply ="书籍:" + bookTitle +", ISBN:"+wxXML.getScanResult() +", 已经录入";
-					break;
-				default:
-					reply ="library-scan no response:" + wxXML.getScanResult();
-					break;
+		
+		WXMsgType msgType = WXMsgType.getWXMsgTypeByName(wxXML.getMsgType()); 
+		switch(msgType){
+			case TEXT:
+				if("1".equals(wxXML.getContent())){
+					reply = this.opriskBookService.fetchAllBookList();
+				}else{
+					reply = "Welcome to oprisk library::--" + wxXML.getContent()
+						    +". 回复1获取所有图书列表";
 				}
-			}
+				break;
+			case IMAGE:
+				reply = "Image message::--" + wxXML.getContent();
+				break;
+			case VOICE:
+				reply = "Voice message::--" + wxXML.getContent();
+				break;
+			case VIDEO:
+				reply = "Video::--" + wxXML.getContent();
+				break;
+			case SHORTVIDEO:
+				reply = "Short Video::--" + wxXML.getContent();
+				break;
+			case LOCATION:
+				reply = "Location::--" + wxXML.getContent();
+				break;
+			case EVENT:
+				reply = parseEventMsg(wxXML);
+				break;
+			default:
+				break;
 		}
+		
+		return reply;
+	}
+
+	/**
+	 * @param reply
+	 * @param wxXML
+	 * @return
+	 * @throws Exception
+	 */
+	private String parseEventMsg(WXReceiveXmlModel wxXML) throws Exception {
+		String reply = "";
+		
+		WXEventType eventType = WXEventType.getWXEventTypeByName(wxXML.getEvent()); 
+		
+		switch(eventType){
+			case SUBSCRIBE:
+				reply = "SUBSCRIBE::--" + wxXML.getContent();
+				break;
+			case UNSUBSCRIBE:
+				reply = "UNSUBSCRIBE::--" + wxXML.getContent();
+				break;
+			case LOCATION:
+				reply = "LOCATION::--" + wxXML.getContent();
+				break;
+			case CLICK:
+				reply = "CLICK::--" + wxXML.getContent();
+				break;
+			case VIEW:
+				reply = "VIEW::--" + wxXML.getContent();
+				break;
+			case SCANCODE_PUSH:
+				reply = "SCANCODE_PUSH::--" + wxXML.getContent();
+				break;
+			case SCANCODE_WAITMSG:
+				reply = parseScanWaitMsg(wxXML);
+				break;
+			case PIC_SYSPHOTO:
+				reply = "PIC_SYSPHOTO::--" + wxXML.getContent();
+				break;
+			case PIC_PHOTO_OR_ALBUM:
+				reply = "PIC_PHOTO_OR_ALBUM::--" + wxXML.getContent();
+				break;
+			case PIC_WEIXIN:
+				reply = "PIC_WEIXIN::--" + wxXML.getContent();
+				break;
+			case LOCATION_SELECT:
+				reply = "LOCATION_SELECT::--" + wxXML.getContent();
+				break;
+			case ENTER_AGENT:
+				reply = "ENTER_AGENT::--" + wxXML.getContent();
+				break;
+			case BATCH_JOB_RESULT:
+				reply = "BATCH_JOB_RESULT::--" + wxXML.getContent();
+				break;
+			default:
+				reply = "Event::--" + wxXML.getContent();
+				break;
+		}
+		return reply;
+	}
+
+	/**
+	 * @param wxXML
+	 * @return
+	 * @throws Exception
+	 */
+	private String parseScanWaitMsg(WXReceiveXmlModel wxXML) throws Exception {
+		String reply = "";
+		WXEventKeyType eventTkeyType = WXEventKeyType.getWXEventKeyTypeByName(wxXML.getEventKey());
+		String isbn = wxXML.getScanResult().substring(wxXML.getScanResult().indexOf(",")+1);
+		switch(eventTkeyType){
+			case SCAN_BORROW: 
+				reply ="书籍:"  + this.opriskBookService.borrowBookByISBN(isbn, wxXML.getFromUserName())
+				       +", 借出登记成功";
+				break;
+			case SCAN_RETURN:
+				reply ="书籍:" + this.opriskBookService.returnBookByISBN(isbn, wxXML.getFromUserName())
+				       +", 归还登记成功";
+				break;
+			case SEARCH_BY_AUTHOR:
+				reply ="library-scan by author:" + wxXML.getScanResult();
+				break;
+			case SEARCH_BY_OWNER:
+				reply ="library-scan by owner:" + wxXML.getScanResult();
+				break;
+			case SCAN_INPUT_BOOK:
+				String bookTitle = opriskBookService.save(wxXML);;
+				reply ="书籍:" + bookTitle +", ISBN:"+wxXML.getScanResult() +", 录入成功";
+				break;
+			default:
+				reply ="library-scan no response:" + wxXML.getScanResult();
+				break;
+			}
 		return reply;
 	}
 	

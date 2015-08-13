@@ -64,6 +64,20 @@ public class OpriskBookServiceImpl implements IOpriskBookService {
 		}
 				
 	}
+	
+	@Override
+	public String fetchAllBookList(){
+		StringBuffer sb = new StringBuffer();
+		
+		List<OpriskBookStoreDTO> bookList = this.opriskRepositoryPoint.getOpriskBookStoreRep().findAll();
+		int i = 1;
+		for(OpriskBookStoreDTO book : bookList){
+			sb.append(i+". :"+book.getTitle()+"\n");
+			i++;
+		}
+				
+		return sb.toString();
+	}
 
 	/**
 	 * @param borrowBy
@@ -73,6 +87,7 @@ public class OpriskBookServiceImpl implements IOpriskBookService {
 		OpriskBookBorrowHistDTO borrowHistDTO = new OpriskBookBorrowHistDTO();
 		
 		borrowHistDTO.setBookStore(book);
+		borrowHistDTO.setWxUserId(borrowBy);
 		borrowHistDTO.setBorrowDate(new Date(System.currentTimeMillis()));
 		borrowHistDTO.setCreatedBy(borrowBy);
 		borrowHistDTO.setCreatedDate(new Date(System.currentTimeMillis()));

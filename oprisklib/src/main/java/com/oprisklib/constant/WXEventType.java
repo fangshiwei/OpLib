@@ -36,4 +36,14 @@ public enum WXEventType {
 	public void setIndex(int index) {
 		this.index = index;
 	}
+	
+	public static WXEventType getWXEventTypeByName(String name){
+		for (WXEventType key : WXEventType.values()) {
+            if (key.getName().equalsIgnoreCase(name)) {
+                return key;
+            }
+        }
+		
+		return null;
+	}
 }

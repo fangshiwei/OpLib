@@ -23,14 +23,16 @@ public class OpriskBookBorrowHistDTO {
 	private Integer opriskBookBorrowHistId;
 	
 	/*@ManyToOne(fetch = FetchType.LAZY)
-	@JoinTable(name = "OPRISK_USER_INFO_ID", 
-	        joinColumns = @JoinColumn(name = "OPRISK_USER_INFO_ID"))
+	@JoinColumn(name = "OPRISK_USER_INFO_ID"))
 	private OprisklibUserInfoDTO userInfo;*/
 	
 	@ManyToOne(cascade = { CascadeType.ALL }, targetEntity=OpriskBookStoreDTO.class, fetch = FetchType.LAZY)
 	@JoinColumn(name = "OPRISK_BOOK_STORE_ID", updatable=true)
 	private OpriskBookStoreDTO bookStore;
-
+	
+	@Column(name="WX_USER_ID")
+	private String wxUserId;
+	
 	@Column(name="BORROW_DATE")
 	private Date borrowDate;
 
@@ -109,5 +111,14 @@ public class OpriskBookBorrowHistDTO {
 	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
 	}
+
+	public String getWxUserId() {
+		return wxUserId;
+	}
+
+	public void setWxUserId(String wxUserId) {
+		this.wxUserId = wxUserId;
+	}
+	
 	
 }

@@ -10,4 +10,5 @@ public interface IOpriskBookService {
 	String save(WXReceiveXmlModel wxXML) throws Exception;
 	String borrowBookByISBN(String isbnNumber, String borrowBy);
 	String returnBookByISBN(String isbnNumber, String borrowBy);
+	String fetchAllBookList();
 }

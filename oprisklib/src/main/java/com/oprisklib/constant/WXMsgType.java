@@ -30,4 +30,14 @@ public enum WXMsgType {
 		this.index = index;
 	}
 	
+	public static WXMsgType getWXMsgTypeByName(String name){
+		for (WXMsgType key : WXMsgType.values()) {
+            if (key.getName().equalsIgnoreCase(name)) {
+                return key;
+            }
+        }
+		
+		return null;
+	}
+	
 }
