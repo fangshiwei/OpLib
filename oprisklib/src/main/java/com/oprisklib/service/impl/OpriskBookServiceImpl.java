@@ -36,6 +36,11 @@ public class OpriskBookServiceImpl implements IOpriskBookService {
 	@Override
 	@Transactional
 	public String borrowBookByISBN(String isbnNumber, String borrowBy){
+		
+		if(checkUserAlreadyBorrowed(isbnNumber, borrowBy)){
+			return "你已经借过这本书，并且还没有归还，不能再借此书！！！";
+		}
+		
 		String isInLibrary = "Y";
 		List<OpriskBookStoreDTO> bookList = this.opriskRepositoryPoint.getOpriskBookStoreRep().findByISBNAndLibraryFlag(isbnNumber, isInLibrary);
 		if(null != bookList && bookList.size() > 0){
@@ -44,10 +49,21 @@ public class OpriskBookServiceImpl implements IOpriskBookService {
 			saveBorrowHist(borrowBy, book);
 			//this.opriskRepositoryPoint.getOpriskBookStoreRep().save(book);
 			
-			return "Book:" + book.getTitle() +" borrow success!";
+			return "图书:" + book.getTitle() +" 登记成功!";
 		}else{
-			return "there is no book in library!";
+			return "当前没有可借书籍!";
 		}
+	}
+	
+	
+	private boolean checkUserAlreadyBorrowed(String isbnNumber, String borrowBy){
+		OpriskBookBorrowHistDTO borrowHistDTO = this.opriskRepositoryPoint.getOpriskBookBorrowHistRep().findBorrowBookByISBNAndBorrowBy(isbnNumber, borrowBy);
+		if(borrowHistDTO != null){
+			return true;
+		}
+		
+		return false;
+		
 	}
 	
 	@Override
@@ -58,9 +74,9 @@ public class OpriskBookServiceImpl implements IOpriskBookService {
 			borrowHistDTO.getBookStore().setIsInLibrary("Y");
 			borrowHistDTO.setReturnDate(new Date(System.currentTimeMillis()));
 			this.opriskRepositoryPoint.getOpriskBookBorrowHistRep().save(borrowHistDTO);
-			return "Book:"+borrowHistDTO.getBookStore().getTitle()+"return success";
+			return "图书:"+borrowHistDTO.getBookStore().getTitle()+"，归还登记成功";
 		}else{
-			return "No record found";
+			return "你没有当前书籍的借出状态";
 		}
 				
 	}

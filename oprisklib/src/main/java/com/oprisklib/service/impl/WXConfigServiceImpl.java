@@ -2,6 +2,7 @@ package com.oprisklib.service.impl;
 
 import javax.annotation.Resource;
 
+import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,8 @@ import com.qq.weixin.mp.aes.WXBizMsgCrypt;
 
 @Service("wxConfigService")
 public class WXConfigServiceImpl implements IWXConfigService{
+	
+	Logger log = Logger.getLogger(WXConfigServiceImpl.class);
 	
 	private static final String ACCESS_TOKEN = "access_token";
 
@@ -41,6 +44,7 @@ public class WXConfigServiceImpl implements IWXConfigService{
 	public WXAccessToken getAccessTokenByGroup(String groupName) throws Exception{
 		Cache cache = CacheManager.getCacheInfo(groupName);
 		if(cacheAvalible(cache)){
+			log.info("cache access token:" + ((WXAccessToken)cache.getValue()).getAccessToken());
 			return (WXAccessToken) cache.getValue();
 		}
 		

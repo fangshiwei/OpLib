@@ -8,12 +8,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.oprisklib.common.model.WXReceiveXmlModel;
 import com.oprisklib.common.model.WXRequestModel;
 import com.oprisklib.service.impl.WXMsgServiceImpl;
+import com.oprisklib.task.BookTask;
 import com.qq.weixin.mp.aes.AesException;
 
 @Controller
@@ -24,6 +29,11 @@ public class WXcontroller {
 	
 	@Resource(name="wxService")
 	private WXMsgServiceImpl wxService;
+	
+	
+	@Autowired  
+    @Qualifier("taskExecutor")  
+    private TaskExecutor taskExecutor; 
 	
 	@RequestMapping("/getWXMenu")
 	public ModelAndView getWXMenu(HttpServletRequest req, HttpServletResponse resp){
@@ -48,19 +58,45 @@ public class WXcontroller {
 	}
 	
 	@RequestMapping("/receviceMsgFromWechat")
-	public ModelAndView receviceMsgFromWechat(HttpServletRequest req, HttpServletResponse resp) throws AesException, IOException{
+	public ModelAndView receviceMsgFromWechat(HttpServletRequest req, HttpServletResponse resp) throws Exception{
 		
 		WXRequestModel wxReq = constructWXRequestModel(req);
 		String reqStr = null;
 		if(null != wxReq.getEchostr() && !"".equalsIgnoreCase(wxReq.getEchostr())){
 			reqStr = wxService.verifyUrl(wxReq);
 		}else{
-			reqStr = wxService.decryptWXMsg(wxReq);
+			WXReceiveXmlModel wxModel = wxService.decodeMessage(wxReq);
+			
+			asyncMsgTask(wxModel);
+			
+			reqStr = replyMsg(wxModel);
+//			reqStr = wxService.decryptWXMsg(wxReq);
 		}
 		  
 		resp.getWriter().write(reqStr);
 		
 		return null;
+	}
+	
+	
+	private String replyMsg(WXReceiveXmlModel wxModel) throws Exception{
+		
+		String corporateId = wxModel.getFromUserName();
+		String sendMsgUserId = wxModel.getToUserName();
+		String replyMsg = "正在处理你的请求，请稍候。。。";	
+		String encryMsg = wxService.generateReplyEncryMsg(corporateId, sendMsgUserId, replyMsg);
+		return encryMsg;
+		
+	}
+	
+	private void asyncMsgTask(WXReceiveXmlModel wxModel) throws Exception{
+		
+		BookTask bookTask = new BookTask();
+		
+		bookTask.setWxService(wxService);
+		bookTask.setWxModel(wxModel);
+		
+		this.taskExecutor.execute(bookTask);
 	}
 	
 	private WXRequestModel constructWXRequestModel(HttpServletRequest req) throws IOException{

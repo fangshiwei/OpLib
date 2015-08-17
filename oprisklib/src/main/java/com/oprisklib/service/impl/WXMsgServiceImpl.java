@@ -3,9 +3,11 @@ package com.oprisklib.service.impl;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Iterator;
+import java.util.Random;
 
 import javax.annotation.Resource;
 
+import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -27,6 +29,7 @@ import com.qq.weixin.mp.aes.WXBizMsgCrypt;
 
 @Service(value="wxService")
 public class WXMsgServiceImpl implements IWXMsgService {
+	Logger log = Logger.getLogger(WXMsgServiceImpl.class);
 	
 	@Resource(name="wxConfigService")
 	private IWXConfigService wxConfigService;
@@ -66,6 +69,37 @@ public class WXMsgServiceImpl implements IWXMsgService {
 		return encryMsg;
 	}
 	
+	public WXReceiveXmlModel decodeMessage(WXRequestModel wxReq) throws Exception{
+		WXBizMsgCrypt wxcpt = this.wxConfigService.getWXBizMsgCrypt();
+		String responseMsg = wxcpt.DecryptMsg(wxReq.getMsgSignature(), wxReq.getTimestamp(), wxReq.getNonce(), wxReq.getsReqData());
+		System.out.println("after decrypt msg: " + responseMsg);
+		WXReceiveXmlModel wxXML = this.parseXML(responseMsg);
+		return wxXML;
+	}
+	
+	
+	public String generateReplyEncryMsg(String to, String from, String content) throws Exception{
+		WXBizMsgCrypt wxcpt = this.wxConfigService.getWXBizMsgCrypt();
+		
+		String formatRply = formatXmlAnswer(to, from, content, String.valueOf(System.currentTimeMillis()));
+		
+		String encryMsg = wxcpt.EncryptMsg(formatRply, String.valueOf(System.currentTimeMillis()), getRandomStr());
+		
+		return encryMsg;
+	}
+	
+	
+	String getRandomStr() {
+		String base = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+		Random random = new Random();
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < 16; i++) {
+			int number = random.nextInt(base.length());
+			sb.append(base.charAt(number));
+		}
+		return sb.toString();
+	}
+	
 	private String parseAndReplyMsg(String responseMsg){
 		String reply = "welcome --:)" ;
 		try {
@@ -75,7 +109,7 @@ public class WXMsgServiceImpl implements IWXMsgService {
 				reply = "inputing, please wait...";
 			}else{
 				createdTime = wxXML.getCreateTime();
-				reply = parseReply(reply, wxXML);
+				reply = parseReply(wxXML);
 			} 
 			
 			reply = formatXmlAnswer(wxXML.getFromUserName(), wxXML.getToUserName(),reply, String.valueOf(System.currentTimeMillis()));
@@ -93,9 +127,9 @@ public class WXMsgServiceImpl implements IWXMsgService {
 	 * @return
 	 * @throws Exception
 	 */
-	private String parseReply(String reply, WXReceiveXmlModel wxXML)
+	private String parseReply(WXReceiveXmlModel wxXML)
 			throws Exception {
-		
+		String reply = "";
 		WXMsgType msgType = WXMsgType.getWXMsgTypeByName(wxXML.getMsgType()); 
 		switch(msgType){
 			case TEXT:
@@ -200,12 +234,10 @@ public class WXMsgServiceImpl implements IWXMsgService {
 		String isbn = wxXML.getScanResult().substring(wxXML.getScanResult().indexOf(",")+1);
 		switch(eventTkeyType){
 			case SCAN_BORROW: 
-				reply ="书籍:"  + this.opriskBookService.borrowBookByISBN(isbn, wxXML.getFromUserName())
-				       +", 借出登记成功";
+				reply =this.opriskBookService.borrowBookByISBN(isbn, wxXML.getFromUserName());
 				break;
 			case SCAN_RETURN:
-				reply ="书籍:" + this.opriskBookService.returnBookByISBN(isbn, wxXML.getFromUserName())
-				       +", 归还登记成功";
+				reply =this.opriskBookService.returnBookByISBN(isbn, wxXML.getFromUserName());
 				break;
 			case SEARCH_BY_AUTHOR:
 				reply ="library-scan by author:" + wxXML.getScanResult();
@@ -274,22 +306,40 @@ public class WXMsgServiceImpl implements IWXMsgService {
     	WXAccessToken accessToken = this.wxConfigService.getAccessTokenByGroup(groupName);
     	url = url.replace(":access_token", accessToken.getAccessToken());
     	
-    	JSONObject json = HttpsUtils.postJson(url,  mokeMsg());
+    	JSONObject json = HttpsUtils.postJson(url, msg);
     	
     	return json;
     	
     }
     
-    private String mokeMsg(){
-    	String msg = "{ "+
-    		  " \"touser\": \"fsw\", " +
-    		  " \"msgtype\": \"text\", "+
-    		  " \"agentid\": \"6\", "+
-    		  " \"text\": {  "+
-    		  "     \"content\": \"test...........\" "+
-    		  " }, " +
-    		"}";
+    
+    public String asyncResponse(WXReceiveXmlModel wxXML) throws Exception{
+		
+		String replyContent = parseReply(wxXML);
+		
+		String groupName = "oprisk";
+		String sendMsgUserId = wxXML.getFromUserName();
+		String agentId = wxXML.getAgentID();
+		String replyMsg = generateJsonTextMsg(sendMsgUserId, agentId, replyContent);
+		log.info(replyMsg);
+		
+		JSONObject json = sendMsgByToken(replyMsg, groupName);
+		
+		return json.getString("errmsg");
+	}
+    
+    private String generateJsonTextMsg(String toUser, String agentId, String replyContent){
+    	JSONObject json = new JSONObject();
+    	String msgType = "text";
+    	json.put("touser", toUser);
+    	json.put("msgtype", msgType);
+    	json.put("agentid", agentId);
     	
-    	return msg;
+    	JSONObject conJson = new JSONObject();
+    	conJson.put("content", replyContent);
+    	
+    	json.put("text", conJson);
+    	
+    	return json.toString();
     }
 }

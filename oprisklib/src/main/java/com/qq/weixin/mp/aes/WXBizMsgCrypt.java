@@ -155,10 +155,10 @@ public class WXBizMsgCrypt {
 	}
 
 	public String EncryptMsg(String replyMsg, String timeStamp, String nonce) throws AesException {
-		// 
+		
 		String encrypt = encrypt(getRandomStr(), replyMsg);
 
-		// 
+		
 		if (timeStamp == "") {
 			timeStamp = Long.toString(System.currentTimeMillis());
 		}

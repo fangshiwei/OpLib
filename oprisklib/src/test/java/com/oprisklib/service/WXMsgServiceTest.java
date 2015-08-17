@@ -7,6 +7,8 @@ import junit.framework.Assert;
 import org.json.JSONObject;
 import org.junit.Test;
 
+import com.oprisklib.common.model.WXReceiveXmlModel;
+
 public class WXMsgServiceTest extends BaseServiceTest {
 
 	@Resource(name="wxService")
@@ -24,4 +26,21 @@ public class WXMsgServiceTest extends BaseServiceTest {
 		
 		
 	}
+	
+	@Test
+	public void testAsyncResponse() throws Exception{
+		WXReceiveXmlModel wxXML = new WXReceiveXmlModel();
+		wxXML.setAgentID("6");
+		wxXML.setFromUserName("corpId");
+		wxXML.setToUserName("fsw");
+		wxXML.setMsgType("text");
+		wxXML.setContent("111111111");
+		String str = wxService.asyncResponse(wxXML);
+		System.out.println(str);
+		
+		Assert.assertEquals("ok", str);;
+		
+	}
+	
+	
 }
