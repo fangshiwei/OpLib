@@ -10,7 +10,6 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.oprisklib.common.model.WXReceiveXmlModel;
 import com.oprisklib.jpa.OpriskRepositoryPoint;
 import com.oprisklib.jpa.model.OpriskBookBorrowHistDTO;
 import com.oprisklib.jpa.model.OpriskBookStoreDTO;
@@ -38,7 +37,7 @@ public class OpriskBookServiceImpl implements IOpriskBookService {
 	public String borrowBookByISBN(String isbnNumber, String borrowBy){
 		
 		if(checkUserAlreadyBorrowed(isbnNumber, borrowBy)){
-			return "你已经借过这本书，并且还没有归还，不能再借此书！！！";
+			return "You cannot borrow this book, cause you already borrowed this book and havn't return yet.！！！";
 		}
 		
 		String isInLibrary = "Y";
@@ -49,9 +48,9 @@ public class OpriskBookServiceImpl implements IOpriskBookService {
 			saveBorrowHist(borrowBy, book);
 			//this.opriskRepositoryPoint.getOpriskBookStoreRep().save(book);
 			
-			return "图书:" + book.getTitle() +" 登记成功!";
+			return "Congratulationsto borrow book:" + book.getTitle() +" success, have good reading!";
 		}else{
-			return "当前没有可借书籍!";
+			return "Sorry, This book is not avalible!";
 		}
 	}
 	
@@ -74,9 +73,9 @@ public class OpriskBookServiceImpl implements IOpriskBookService {
 			borrowHistDTO.getBookStore().setIsInLibrary("Y");
 			borrowHistDTO.setReturnDate(new Date(System.currentTimeMillis()));
 			this.opriskRepositoryPoint.getOpriskBookBorrowHistRep().save(borrowHistDTO);
-			return "图书:"+borrowHistDTO.getBookStore().getTitle()+"，归还登记成功";
+			return "Book:"+borrowHistDTO.getBookStore().getTitle()+" return success, thanks for you return!";
 		}else{
-			return "你没有当前书籍的借出状态";
+			return "You have not borrow this book yet.";
 		}
 				
 	}
@@ -94,6 +93,38 @@ public class OpriskBookServiceImpl implements IOpriskBookService {
 				
 		return sb.toString();
 	}
+	
+	@Override
+	public String fetchAllAvalibleBookList(){
+		StringBuffer sb = new StringBuffer();
+		List<OpriskBookStoreDTO> bookList = this.opriskRepositoryPoint.getOpriskBookStoreRep().findAllAvalibleBook();
+		int i = 1;
+		for(OpriskBookStoreDTO book : bookList){
+			sb.append(i+". :"+book.getTitle()+"\n");
+			i++;
+		}
+				
+		return sb.toString();
+	}
+	
+	@Override
+	public String fetchAllBookListByName(String bookName){
+		if(bookName.length()<=2){
+			return "Book name is illegal!!!";
+		}
+		bookName =bookName.substring(2);
+		StringBuffer sb = new StringBuffer();
+		List<OpriskBookStoreDTO> bookList = this.opriskRepositoryPoint.getOpriskBookStoreRep().fetchAllBookListByName(bookName);
+		int i = 1;
+		for(OpriskBookStoreDTO book : bookList){
+			sb.append(i+". Book name:"+book.getTitle()+"; Summary:"+book.getSummary()+"; In library: "+book.getIsInLibrary() +"\n") ;
+			i++;
+		}
+				
+		return sb.toString();
+	}
+	
+	
 
 	/**
 	 * @param borrowBy
@@ -109,26 +140,23 @@ public class OpriskBookServiceImpl implements IOpriskBookService {
 		borrowHistDTO.setCreatedDate(new Date(System.currentTimeMillis()));
 		this.opriskRepositoryPoint.getOpriskBookBorrowHistRep().save(borrowHistDTO);
 	}
-	
-	
-	
-	
-	public OpriskBookStoreDTO save(OpriskBookStoreDTO book){
-		book.setIsInLibrary("N");
-		return this.opriskRepositoryPoint.getOpriskBookStoreRep().save(book);
-	}
 
 	@Override
 	@Transactional
-	public String save(WXReceiveXmlModel wxXML) throws Exception {
+	public String saveBook(String scanResult) throws Exception {
 		OpriskBookStoreDTO bookStore = null;
-		String isbn = wxXML.getScanResult().substring(wxXML.getScanResult().indexOf(",")+1);
+		String isbn = scanResult.substring(scanResult.indexOf(",")+1);
 		log.info("isbn:" + isbn);
 		JSONObject json = doubanService.getBookInfoByIsbn(isbn);
+		
+		if("book_not_found".equals(json.get("msg"))){
+			return "No Book found in 豆瓣  by ISBN:" + scanResult;
+		}
+		
 		bookStore = parseJsonToBookStore(json, "oprisk");
 		this.opriskRepositoryPoint.getOpriskBookStoreRep().save(bookStore);
-		
-		return bookStore.getTitle();
+		String reply ="Input Book:" + bookStore.getTitle() +", ISBN:"+scanResult +" Success.";
+		return reply;
 	}
 	
 	

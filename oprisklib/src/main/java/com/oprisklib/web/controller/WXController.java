@@ -23,22 +23,22 @@ import com.qq.weixin.mp.aes.AesException;
 
 @Controller
 @RequestMapping("/wx")
-public class WXcontroller {
+public class WXController {
 	
-	Logger log = Logger.getLogger(WXcontroller.class);
+	Logger log = Logger.getLogger(WXController.class);
 	
 	@Resource(name="wxService")
 	private WXMsgServiceImpl wxService;
-	
 	
 	@Autowired  
     @Qualifier("taskExecutor")  
     private TaskExecutor taskExecutor; 
 	
 	@RequestMapping("/getWXMenu")
-	public ModelAndView getWXMenu(HttpServletRequest req, HttpServletResponse resp){
-		
-		
+	public ModelAndView getWXMenu(HttpServletRequest req, HttpServletResponse resp) throws IOException{
+		String sVerifyMsgSig = req.getParameter("msg_signature");
+		System.out.println("---------------" + sVerifyMsgSig + "--------------");
+		resp.getWriter().write(sVerifyMsgSig);
 		return null;
 		
 	}

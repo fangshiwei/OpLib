@@ -31,12 +31,32 @@ public class BookServiceTest extends BaseServiceTest {
 		Assert.assertEquals("success", msg.substring(msg.lastIndexOf(" ")+1, msg.length()-1));
 	}
 	
-	
-	
 	@Test
 	public void testFetchAllBookList(){
 		String booklist = this.opriskBookService.fetchAllBookList();
 		System.out.println(booklist);
 		Assert.assertTrue(!"".equals(booklist));
 	}
+	
+	@Test
+	public void testSaveBookSuccess() throws Exception{
+		String scanResult = "ISBN,9787111423140";
+		
+		String msg =  this.opriskBookService.saveBook(scanResult);
+		
+		Assert.assertEquals("In", msg.substring(0, 2));
+		
+	}
+	
+	@Test
+	public void testSaveBookNotFound() throws Exception{
+		String scanResult = "ISBN,1111";
+		
+		String msg =  this.opriskBookService.saveBook(scanResult);
+		
+		Assert.assertEquals("No", msg.substring(0, 2));
+		
+	}
+	
+	
 }

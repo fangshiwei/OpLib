@@ -10,10 +10,11 @@ import com.oprisklib.util.HttpsUtils;
 public class DoubanServiceImpl implements IDoubanService {
 
 	public JSONObject getBookInfoByIsbn(String isbn) throws Exception{
+		
 		String doubanUrl = "https://api.douban.com/v2/book/isbn/" + isbn;
+		
 		JSONObject json = HttpsUtils.get(doubanUrl);
 
-		
 		return json;
 	}
 

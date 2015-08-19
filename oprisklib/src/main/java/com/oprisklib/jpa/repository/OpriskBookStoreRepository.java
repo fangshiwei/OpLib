@@ -19,4 +19,11 @@ public interface OpriskBookStoreRepository extends JpaRepository<OpriskBookStore
 	List<OpriskBookStoreDTO> findByISBNAndLibraryFlag(@Param("isbn") String isbn, 
 			@Param("isInLibrary") String isInLibrary); 
 	
+	@Query("select u from OpriskBookStoreDTO u where u.isActive = 'Y' and u.isInLibrary = 'Y'") 
+	List<OpriskBookStoreDTO> findAllAvalibleBook(); 
+	
+	@Query("select u from OpriskBookStoreDTO u where u.isActive = 'Y' "
+			+ " and lower(u.title) like lower('%:bookName%')") 
+	List<OpriskBookStoreDTO> fetchAllBookListByName(@Param("bookName") String bookName); 
+	
 }

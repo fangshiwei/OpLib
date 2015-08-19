@@ -133,12 +133,7 @@ public class WXMsgServiceImpl implements IWXMsgService {
 		WXMsgType msgType = WXMsgType.getWXMsgTypeByName(wxXML.getMsgType()); 
 		switch(msgType){
 			case TEXT:
-				if("1".equals(wxXML.getContent())){
-					reply = this.opriskBookService.fetchAllBookList();
-				}else{
-					reply = "Welcome to oprisk library::--" + wxXML.getContent()
-						    +". 回复1获取所有图书列表";
-				}
+				reply = parseTextMessage(wxXML);
 				break;
 			case IMAGE:
 				reply = "Image message::--" + wxXML.getContent();
@@ -162,6 +157,34 @@ public class WXMsgServiceImpl implements IWXMsgService {
 				break;
 		}
 		
+		return reply;
+	}
+
+	/**
+	 * @param wxXML
+	 * @return
+	 */
+	private String parseTextMessage(WXReceiveXmlModel wxXML) {
+		String reply;
+		char caseCondition = wxXML.getContent().charAt(0);
+		switch(caseCondition){
+		case '1':
+			reply = this.opriskBookService.fetchAllBookList();
+			break;
+		case '2':
+			reply = this.opriskBookService.fetchAllAvalibleBookList();
+			break;
+		case '3':
+			reply = this.opriskBookService.fetchAllBookListByName( wxXML.getContent());
+			break;
+		default:
+			reply = "Hi, " + wxXML.getFromUserName() + " Welcome to oprisk library. \n"
+				    +". Replay 1 to get all book list./n"
+				    + " Replay 2 to get avalible book list./n"
+				    + " Replay 3-bookname(eg:3-Java) to get book summary and status";
+			break;	
+		
+		}
 		return reply;
 	}
 
@@ -246,8 +269,7 @@ public class WXMsgServiceImpl implements IWXMsgService {
 				reply ="library-scan by owner:" + wxXML.getScanResult();
 				break;
 			case SCAN_INPUT_BOOK:
-				String bookTitle = opriskBookService.save(wxXML);;
-				reply ="书籍:" + bookTitle +", ISBN:"+wxXML.getScanResult() +", 录入成功";
+				reply = opriskBookService.saveBook(wxXML.getScanResult());
 				break;
 			default:
 				reply ="library-scan no response:" + wxXML.getScanResult();

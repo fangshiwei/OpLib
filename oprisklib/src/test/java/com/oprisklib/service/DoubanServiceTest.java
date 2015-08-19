@@ -23,4 +23,15 @@ public class DoubanServiceTest extends BaseServiceTest{
 			e.printStackTrace();
 		}
 	}
+	
+	@Test
+	public void testGetBookInfoByIsbnNotExits(){
+		String isbn = "97840";
+		try {
+			JSONObject jsonObject = doubanService.getBookInfoByIsbn(isbn);
+			Assert.assertEquals("book_not_found", jsonObject.get("msg"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

@@ -62,13 +62,20 @@ public class HttpsUtils {
          out.flush();
          out.close();
          
-         InputStream is = conn.getInputStream();
+         conn.disconnect();
          
-         response = new JSONObject(new JSONTokener(is));  
-    	
-    	
-    	return response;
-    	
+         if(conn.getResponseCode() == 200){
+        	 InputStream is = conn.getInputStream();
+             response = new JSONObject(new JSONTokener(is));
+             response.put("msg", "success");
+             return response;
+         }else{
+        	 InputStream is = conn.getErrorStream();
+        	 response = new JSONObject(new JSONTokener(is));
+        	 return response;
+         }
+        
+         
     	
     }
     
