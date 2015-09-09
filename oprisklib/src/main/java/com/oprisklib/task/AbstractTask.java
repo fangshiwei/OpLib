@@ -1,16 +1,16 @@
 package com.oprisklib.task;
 
-import com.oprisklib.common.model.WXReceiveXmlModel;
+import com.oprisklib.jpa.model.OpriskWXMessageDTO;
 
 public abstract class AbstractTask implements Runnable{
-	WXReceiveXmlModel wxModel;
+	OpriskWXMessageDTO wxMessage;
 
-	public WXReceiveXmlModel getWxModel() {
-		return wxModel;
+	public OpriskWXMessageDTO getWxMessage() {
+		return wxMessage;
 	}
 
-	public void setWxModel(WXReceiveXmlModel wxModel) {
-		this.wxModel = wxModel;
+	public void setWxMessage(OpriskWXMessageDTO wxModel) {
+		this.wxMessage = wxModel;
 	}
 
 	

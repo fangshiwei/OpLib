@@ -15,11 +15,12 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import com.oprisklib.common.model.WXAccessToken;
-import com.oprisklib.common.model.WXReceiveXmlModel;
 import com.oprisklib.common.model.WXRequestModel;
 import com.oprisklib.constant.WXEventKeyType;
 import com.oprisklib.constant.WXEventType;
 import com.oprisklib.constant.WXMsgType;
+import com.oprisklib.jpa.OpriskRepositoryPoint;
+import com.oprisklib.jpa.model.OpriskWXMessageDTO;
 import com.oprisklib.service.IOpriskBookService;
 import com.oprisklib.service.IWXConfigService;
 import com.oprisklib.service.IWXMsgService;
@@ -37,7 +38,10 @@ public class WXMsgServiceImpl implements IWXMsgService {
 	@Resource(name="opriskBookService")
 	private IOpriskBookService opriskBookService;
 	
-	private static String createdTime = "";
+	@Resource(name="opriskRepositoryPoint")
+	private OpriskRepositoryPoint opriskRepositoryPoint;
+	
+	private static Integer createdTime = -1;
 	
 	public String verifyUrl(WXRequestModel wxReq) throws AesException{
 		
@@ -69,14 +73,18 @@ public class WXMsgServiceImpl implements IWXMsgService {
 		return encryMsg;
 	}
 	
-	public WXReceiveXmlModel decodeMessage(WXRequestModel wxReq) throws Exception{
+	public OpriskWXMessageDTO decodeMessage(WXRequestModel wxReq) throws Exception{
 		WXBizMsgCrypt wxcpt = this.wxConfigService.getWXBizMsgCrypt();
 		String responseMsg = wxcpt.DecryptMsg(wxReq.getMsgSignature(), wxReq.getTimestamp(), wxReq.getNonce(), wxReq.getsReqData());
 		System.out.println("after decrypt msg: " + responseMsg);
-		WXReceiveXmlModel wxXML = this.parseXML(responseMsg);
-		return wxXML;
+		OpriskWXMessageDTO wxMessage = this.parseXML(responseMsg);
+		return wxMessage;
 	}
 	
+	@Override
+	public OpriskWXMessageDTO saveMessage(OpriskWXMessageDTO wxMessage){
+		return this.opriskRepositoryPoint.getOpriskWXMessageRep().save(wxMessage);
+	}
 	
 	public String generateReplyEncryMsg(String to, String from, String content) throws Exception{
 		WXBizMsgCrypt wxcpt = this.wxConfigService.getWXBizMsgCrypt();
@@ -104,7 +112,7 @@ public class WXMsgServiceImpl implements IWXMsgService {
 		String reply = "welcome --:)" ;
 		try {
 			
-			WXReceiveXmlModel wxXML = this.parseXML(responseMsg);
+			OpriskWXMessageDTO wxXML = this.parseXML(responseMsg);
 			if(createdTime.equals(wxXML.getCreateTime())){
 				reply = "inputing, please wait...";
 			}else{
@@ -127,7 +135,7 @@ public class WXMsgServiceImpl implements IWXMsgService {
 	 * @return
 	 * @throws Exception
 	 */
-	private String parseReply(WXReceiveXmlModel wxXML)
+	private String parseReply(OpriskWXMessageDTO wxXML)
 			throws Exception {
 		String reply = "";
 		WXMsgType msgType = WXMsgType.getWXMsgTypeByName(wxXML.getMsgType()); 
@@ -164,7 +172,7 @@ public class WXMsgServiceImpl implements IWXMsgService {
 	 * @param wxXML
 	 * @return
 	 */
-	private String parseTextMessage(WXReceiveXmlModel wxXML) {
+	private String parseTextMessage(OpriskWXMessageDTO wxXML) {
 		String reply;
 		char caseCondition = wxXML.getContent().charAt(0);
 		switch(caseCondition){
@@ -194,7 +202,7 @@ public class WXMsgServiceImpl implements IWXMsgService {
 	 * @return
 	 * @throws Exception
 	 */
-	private String parseEventMsg(WXReceiveXmlModel wxXML) throws Exception {
+	private String parseEventMsg(OpriskWXMessageDTO wxXML) throws Exception {
 		String reply = "";
 		
 		WXEventType eventType = WXEventType.getWXEventTypeByName(wxXML.getEvent()); 
@@ -251,7 +259,7 @@ public class WXMsgServiceImpl implements IWXMsgService {
 	 * @return
 	 * @throws Exception
 	 */
-	private String parseScanWaitMsg(WXReceiveXmlModel wxXML) throws Exception {
+	private String parseScanWaitMsg(OpriskWXMessageDTO wxXML) throws Exception {
 		String reply = "";
 		WXEventKeyType eventTkeyType = WXEventKeyType.getWXEventKeyTypeByName(wxXML.getEventKey());
 		String isbn = wxXML.getScanResult().substring(wxXML.getScanResult().indexOf(",")+1);
@@ -278,15 +286,15 @@ public class WXMsgServiceImpl implements IWXMsgService {
 		return reply;
 	}
 	
-	private WXReceiveXmlModel parseXML(String strXml) throws Exception {
-		WXReceiveXmlModel msg = new WXReceiveXmlModel();  
+	private OpriskWXMessageDTO parseXML(String strXml) throws Exception {
+		OpriskWXMessageDTO msg = new OpriskWXMessageDTO();  
 		if (strXml.length() <= 0 || strXml == null){
 			return null;
 		}
 		Document document = DocumentHelper.parseText(strXml);
 		Element root = document.getRootElement(); 
-		Class<?> c = Class.forName("com.oprisklib.common.model.WXReceiveXmlModel"); 
-		msg = (WXReceiveXmlModel)c.newInstance();
+		Class<?> c = Class.forName("com.oprisklib.jpa.model.OpriskWXMessageDTO"); 
+		msg = (OpriskWXMessageDTO)c.newInstance();
 		Iterator<?> iter = root.elementIterator();
 		while(iter.hasNext()){  
             Element ele = (Element)iter.next();  
@@ -296,7 +304,11 @@ public class WXMsgServiceImpl implements IWXMsgService {
             		Element elej = (Element)iterj.next(); 
             		Field field = c.getDeclaredField(elej.getName());   
                     Method method = c.getDeclaredMethod("set"+elej.getName(), field.getType());   
-                    method.invoke(msg, elej.getText());  
+                    if(field.getType().getSimpleName().equals("Integer")){
+                    	method.invoke(msg, Integer.valueOf(elej.getText())); 
+                    }else{
+                    	method.invoke(msg, elej.getText()); 
+                    }
             	}
             }
 
@@ -335,13 +347,13 @@ public class WXMsgServiceImpl implements IWXMsgService {
     }
     
     
-    public String asyncResponse(WXReceiveXmlModel wxXML) throws Exception{
+    public String asyncResponse(OpriskWXMessageDTO wxXML) throws Exception{
 		
 		String replyContent = parseReply(wxXML);
 		
 		String groupName = "oprisk";
 		String sendMsgUserId = wxXML.getFromUserName();
-		String agentId = wxXML.getAgentID();
+		String agentId = String.valueOf(wxXML.getAgentID());
 		String replyMsg = generateJsonTextMsg(sendMsgUserId, agentId, replyContent);
 		log.info(replyMsg);
 		

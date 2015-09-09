@@ -15,8 +15,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.oprisklib.common.model.WXReceiveXmlModel;
 import com.oprisklib.common.model.WXRequestModel;
+import com.oprisklib.jpa.model.OpriskWXMessageDTO;
 import com.oprisklib.service.impl.WXMsgServiceImpl;
 import com.oprisklib.task.BookTask;
 import com.qq.weixin.mp.aes.AesException;
@@ -50,7 +50,6 @@ public class WXController {
 		 String sVerifyNonce = req.getParameter("nonce");
 		 String sVerifyEchoStr = req.getParameter("echostr");
 		 
-		 
 		 String sEchoStr = wxService.verifyUrl(sVerifyMsgSig, sVerifyTimeStamp, sVerifyNonce, sVerifyEchoStr);
 		 resp.getWriter().write(sEchoStr);
 		return null;
@@ -65,11 +64,11 @@ public class WXController {
 		if(null != wxReq.getEchostr() && !"".equalsIgnoreCase(wxReq.getEchostr())){
 			reqStr = wxService.verifyUrl(wxReq);
 		}else{
-			WXReceiveXmlModel wxModel = wxService.decodeMessage(wxReq);
+			OpriskWXMessageDTO wxMessage = wxService.decodeMessage(wxReq);
 			
-			asyncMsgTask(wxModel);
+			asyncMsgTask(wxMessage);
 			
-			reqStr = replyMsg(wxModel);
+			reqStr = replyMsg(wxMessage);
 //			reqStr = wxService.decryptWXMsg(wxReq);
 		}
 		  
@@ -79,22 +78,22 @@ public class WXController {
 	}
 	
 	
-	private String replyMsg(WXReceiveXmlModel wxModel) throws Exception{
+	private String replyMsg(OpriskWXMessageDTO wxModel) throws Exception{
 		
 		String corporateId = wxModel.getFromUserName();
 		String sendMsgUserId = wxModel.getToUserName();
-		String replyMsg = "正在处理你的请求，请稍候。。。";	
+		String replyMsg = "Decoding you request，Please wait。。。";	
 		String encryMsg = wxService.generateReplyEncryMsg(corporateId, sendMsgUserId, replyMsg);
 		return encryMsg;
 		
 	}
 	
-	private void asyncMsgTask(WXReceiveXmlModel wxModel) throws Exception{
+	private void asyncMsgTask(OpriskWXMessageDTO wxModel) throws Exception{
 		
 		BookTask bookTask = new BookTask();
 		
 		bookTask.setWxService(wxService);
-		bookTask.setWxModel(wxModel);
+		bookTask.setWxMessage(wxModel);
 		
 		this.taskExecutor.execute(bookTask);
 	}
@@ -111,10 +110,10 @@ public class WXController {
 		wxReq.setTimestamp(sTimestamp);
 		wxReq.setNonce(sNonce);
 		wxReq.setEchostr(sEchostr);
-		System.out.println("sMsgSignature" + sMsgSignature);
+		/*System.out.println("sMsgSignature" + sMsgSignature);
 		System.out.println("sTimestamp" + sTimestamp);
 		System.out.println("sNonce" + sNonce);
-		System.out.println("sEchostr" + sEchostr);
+		System.out.println("sEchostr" + sEchostr);*/
 		
 		InputStream in = req.getInputStream(); 
 		StringBuilder xmlMsg = new StringBuilder();  

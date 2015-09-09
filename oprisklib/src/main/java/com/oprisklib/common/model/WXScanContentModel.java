@@ -1,4 +1,4 @@
-package com.oprisklib.common.model;
+/*package com.oprisklib.common.model;
 
 public class WXScanContentModel extends WXBaseContentModel {
 	
@@ -41,3 +41,4 @@ public class WXScanContentModel extends WXBaseContentModel {
 	}
 	
 }
+*/

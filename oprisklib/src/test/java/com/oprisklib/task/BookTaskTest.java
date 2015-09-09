@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.task.TaskExecutor;
 
-import com.oprisklib.common.model.WXReceiveXmlModel;
+import com.oprisklib.jpa.model.OpriskWXMessageDTO;
 import com.oprisklib.service.impl.WXMsgServiceImpl;
 
 public class BookTaskTest extends BaseTaskTest{ 
@@ -19,13 +19,13 @@ public class BookTaskTest extends BaseTaskTest{
     @Resource(name="wxService")
 	private WXMsgServiceImpl wxService;
     
-    private WXReceiveXmlModel wxXML;
+    private OpriskWXMessageDTO wxXML;
     
     
     @Before
     private void constructWxModel(){
-    	wxXML = new WXReceiveXmlModel();
-		wxXML.setAgentID("6");
+    	wxXML = new OpriskWXMessageDTO();
+		wxXML.setAgentID(6);
 		wxXML.setFromUserName("corpId");
 		wxXML.setToUserName("fsw");
 		wxXML.setMsgType("text");
@@ -38,7 +38,7 @@ public class BookTaskTest extends BaseTaskTest{
 		
 		BookTask bt = new BookTask();
 		bt.setWxService(wxService);
-		bt.setWxModel(wxXML);
+		bt.setWxMessage(wxXML);
 		taskExecutor.execute(bt);
 		
 		

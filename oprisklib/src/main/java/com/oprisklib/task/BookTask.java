@@ -25,7 +25,8 @@ public class BookTask extends AbstractTask {
 		log.info("book task");
 		
 		try {
-			wxService.asyncResponse(this.getWxModel());
+			wxService.saveMessage(wxMessage);
+			wxService.asyncResponse(this.getWxMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

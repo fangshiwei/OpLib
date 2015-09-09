@@ -5,12 +5,25 @@ import javax.annotation.Resource;
 import junit.framework.Assert;
 
 import org.json.JSONObject;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 
 public class DoubanServiceTest extends BaseServiceTest{
 
 	@Resource(name="doubanService")
 	IDoubanService doubanService;
+	
+	@Mock
+	private IOpriskMessageService messageService;
+	
+	@Before
+	public void setUp(){
+		messageService = Mockito.mock(IOpriskMessageService.class);
+	}
+	
+	
 	
 	@Test
 	public void testGetBookInfoByIsbn(){

@@ -8,6 +8,7 @@ import com.oprisklib.jpa.repository.OpriskBookStoreRepository;
 import com.oprisklib.jpa.repository.OpriskUserInfoRepository;
 import com.oprisklib.jpa.repository.OpriskWXConfigRepository;
 import com.oprisklib.jpa.repository.OpriskWXGroupSecretRepository;
+import com.oprisklib.jpa.repository.OpriskWXMessageRepository;
 
 @Component(value="opriskRepositoryPoint")
 public class OpriskRepositoryPoint {
@@ -26,6 +27,8 @@ public class OpriskRepositoryPoint {
 	@Autowired
 	private OpriskUserInfoRepository opriskUserInfoRep;
 
+	@Autowired
+	private OpriskWXMessageRepository opriskWXMessageRep;
 	
 	
 	public OpriskBookBorrowHistRepository getOpriskBookBorrowHistRep() {
@@ -69,5 +72,15 @@ public class OpriskRepositoryPoint {
 	public void setOpriskUserInfoRep(OpriskUserInfoRepository opriskUserInfoRep) {
 		this.opriskUserInfoRep = opriskUserInfoRep;
 	}
+
+	public OpriskWXMessageRepository getOpriskWXMessageRep() {
+		return opriskWXMessageRep;
+	}
+
+	public void setOpriskWXMessageRep(OpriskWXMessageRepository opriskWXMessageRep) {
+		this.opriskWXMessageRep = opriskWXMessageRep;
+	}
+	
+	
 	
 }
