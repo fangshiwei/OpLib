@@ -7,7 +7,8 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 
 @RunWith(SpringJUnit4ClassRunner.class) 
 @TransactionConfiguration(transactionManager = "txManager", defaultRollback = true)
-@ContextConfiguration(locations={"classpath:lib-service.xml",
+@ContextConfiguration(locations={"classpath:lib-servlet.xml",
+		"classpath:lib-service.xml",
 		"classpath:lib-dao.xml"})
 public class BaseServiceTest {
 	

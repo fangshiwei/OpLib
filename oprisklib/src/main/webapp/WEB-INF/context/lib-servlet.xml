@@ -24,7 +24,8 @@
     <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:prefix="/jsp/" p:suffix=".jsp" />
     
-    <aop:aspectj-autoproxy proxy-target-class="true" />
+    <aop:aspectj-autoproxy  proxy-target-class="true"/>
+    <context:component-scan base-package="com.oprisklib.aspect"/>
     
     <mvc:annotation-driven />
     

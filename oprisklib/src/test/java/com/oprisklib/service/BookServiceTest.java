@@ -6,12 +6,10 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import com.oprisklib.service.impl.OpriskBookServiceImpl;
-
 public class BookServiceTest extends BaseServiceTest {
 
 	@Resource(name="opriskBookService")
-	private OpriskBookServiceImpl opriskBookService;
+	private IOpriskBookService opriskBookService;
 	
 	@Test
 	public void testBorrowBookReturnNoBook(){
