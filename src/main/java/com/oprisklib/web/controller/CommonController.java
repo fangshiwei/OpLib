@@ -32,4 +32,18 @@ public class CommonController {
 		return null;
 		
 	}
+	
+	@RequestMapping("/searchBook")
+	@ExceptionLog
+	public ModelAndView searchBook(HttpServletRequest req, HttpServletResponse resp) throws Exception{
+		String bookName = req.getParameter("bookName");
+		String authorName = req.getParameter("authorName");
+		String publishName = req.getParameter("publishName");
+		log.info("Book name:" + bookName + ", Author name:" 
+		+ authorName + ", Publish Name:" + publishName);
+
+		return null;
+		
+	}
+	 
 }
