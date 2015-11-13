@@ -175,54 +175,12 @@ $(function(){
    <script type="text/javascript" src="http://static.dodoca.com/js/wxsharejs.js?v=1.4"></script>
    <script type="text/javascript" src="http://static.dodoca.com/js/jquery-1.10.2.min.js"></script> 
    <!-- <script type="text/javascript" src="/www/js/wxsharejs.js"></script> --> 
-   <script type="text/javascript">
-
-	var tongjitype = $.trim();
-	var uid = $.trim(7291);
-	function tongji(id,type){
-		$.ajax({
-			url:"/7291/phonewebsite/tongji",
-			type:"post",
-			async:false,
-			data:{'id':id,'type':type,'tongjitype':tongjitype,'uid':uid}		
-		})
-	}
-	var fx_describefenxiang = "";
-	wx_share_out('台湾生活广场','',fx_describefenxiang);
-</script>
-   <a href="/phone/websiteofficial?uid=7291"> 
+   <a href="#"> 
     <footer>
-      懒人模板提供服务 
+     oprisk library @Alpha
     </footer> </a> 
    <div class="blankwhite" style="height:30px;"></div> 
-   <script>
-
-$(function(){
-	if (typeof WeixinJSBridge == "undefined"){
-		if( document.addEventListener ){
-			document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
-		}else if (document.attachEvent){
-			document.attachEvent('WeixinJSBridgeReady', onBridgeReady); 
-			document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
-		}
-	}else{
-		onBridgeReady();
-	}
-
-	var shareTitle = '台湾生活广场';
-	var imgUrl = "";
-	var descContent = $("#div_fx_describe").text();
-	var urllink = "new.dodoca.com/7291/phonewebsite/website?id=22327#mp.weixin.qq.com";
-	wx_share_out('7291',shareTitle,imgUrl,descContent,urllink);
-})
-
-function onBridgeReady(){
-     WeixinJSBridge.call('showOptionMenu');
-}
-</script> 
-   <div id="div_fx_describe" style="display:none;"></div> 
-   <script type="text/javascript">
-	</script>   
+      
   </div>
  </body>
 </html>

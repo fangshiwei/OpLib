@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>alpha</groupId>
-  <artifactId>oprisklib</artifactId>
+  <groupId>lxth</groupId>
+  <artifactId>oplib</artifactId>
   <packaging>war</packaging>
   <version>0.0.1-SNAPSHOT</version>
-  <name>alpha oplib Maven Webapp</name>
+  <name>oplib Maven Webapp</name>
   <url>http://maven.apache.org</url>
   
   <properties>
@@ -275,7 +275,7 @@
 			
 
   <build>
-    <finalName>OpLib</finalName>
+    <finalName>oplib</finalName>
 	    <plugins>  
 		   <plugin>  
 		    	<groupId>org.apache.maven.plugins</groupId>  
