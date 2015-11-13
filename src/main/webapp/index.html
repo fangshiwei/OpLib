@@ -1,6 +1,228 @@
 <!DOCTYPE html>
 <html>
-<body>
-	<h2>Hello, OpRisk Library!</h2>
-</body>
+ <head> 
+  <meta charset="utf-8" /> 
+  <title>Oprisk Library</title> 
+  <meta name="Keywords" content="Oprisk Library" /> 
+  <!-- 移动设备支持 --> 
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /> 
+  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" /> 
+  <meta content="no-cache,must-revalidate" http-equiv="Cache-Control" /> 
+  <meta content="no-cache" http-equiv="pragma" /> 
+  <meta content="0" http-equiv="expires" /> 
+  <meta content="telephone=no, address=no" name="format-detection" /> 
+  <meta name="apple-mobile-web-app-capable" content="yes" /> 
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" /> 
+  <link href="css/reset.css" rel="stylesheet" type="text/css" />
+  <!--手机端重置样式--> 
+  <link href="css/mod47.css" rel="stylesheet" type="text/css" />
+  <!--微网站模板47样式--> 
+  <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script> 
+  <script>
+$(function(){
+	var winheight=$(window).height();
+	//$('#wrap').css('min-height',winheight-30+'px');//footer居底
+	$('.blankwhite').css('height','0px');
+	var winwidth=$(window).width();
+	//$('.contentimgcl').css('height',winwidth*0.2+'px');
+});
+</script> 
+ </head> 
+ <body onselectstart="return true;" ondragstart="return false;"> 
+  <div id="wrap" class="clr"> 
+   <!--<div class="telphone"><img src="../images/tel.png"></div>--> 
+   <div class="banner"> 
+    <!-- 	<img src="http://static.dodoca.com/images/mod/mod47/topbanner.jpg"> --> 
+    <div style="width:100%;align:center;margin:0 auto;" id="imageswzi"> 
+     <style>
+.box_swipe{
+    overflow:hidden;
+    position:relative;
+}
+.box_swipe ul{
+    -webkit-padding-start: 0px;
+}
+
+.box_swipe>ol{
+    height:20px;
+    position: relative;
+    z-index:10;
+    margin-top:-25px;
+    text-align:right;
+    padding-right:15px;
+}/* background-color:rgba(0,0,0,0.3); */
+.box_swipe>ol>li{
+    display:inline-block;
+    margin:5px 0;
+    width:8px;
+    height:8px;
+    background-color:#757575;
+    border-radius: 8px;
+}
+.box_swipe>ol>li.on{
+    background-color:#ffffff;
+}
+
+
+
+</style> 
+     <script src="js/swipe2.js" type="text/javascript"></script> 
+     <div id="displayswipe" style="display:none;"> 
+      <div style="visibility: visible;" id="banner_box" class="box_swipe"> 
+       <ul style="list-style: none outside none; width: 4480px; transition-duration: 500ms; transform: translate3d(-1920px, 0px, 0px);"> 
+        <li style="width: 640px; display: table-cell; vertical-align: top;"> <img src="img/bar.jpg" id="bannerimg13203" style="width:100%;" /> </li> 
+        <li style="width: 640px; display: table-cell; vertical-align: top;"> <img src="img/bar2.jpeg" id="bannerimg13202" style="width:100%;" /> </li> 
+        <li style="width: 640px; display: table-cell; vertical-align: top;"> <img src="img/bar2.jpeg" id="bannerimg16063" style="width:100%;" /> </li> 
+       </ul> 
+       <ol> 
+        <li class=""></li>&nbsp; 
+        <li class=""></li>&nbsp; 
+        <li class=""></li>&nbsp; 
+       </ol> 
+      </div> 
+     </div> 
+     <div id="displayone" style="display:none;"> 
+      <img src="http://pic.dodoca.com/org/8/59/ebe/c57b/1bf60273c821ef78d72d10.jpg" alt=" " id="onebannerimg" style="width:100%;" /> 
+     </div> 
+     <script>
+$(function(){
+	$("#displayswipe").show();
+	$("#displayone").hide();
+	//var banner=Array;//banner列表记录
+
+
+	/*
+	var winwidth2= $("#windowwidth").val();
+	var bili=$("#bili").val();
+	bili=parseFloat(bili);
+   	var height2=bili*winwidth2+"px";
+   	var height2nopx=bili*winwidth2;
+   	
+   	
+   	$("#imageswzi").css("height",height2);
+   	$("#banner_box").css("height",height2);
+   	*/
+   	if(3==1){
+      	$("#displayswipe").hide();
+   		$("#displayone").show();
+   		//$("#onebannerimg").css("height",height2);
+   		//var banner0=Array;//一条banner记录
+   		//$("#onebannerimg").attr("src",banner0.images);
+    }
+
+   	
+	
+   	
+	new Swipe(document.getElementById('banner_box'), {
+		speed: 500,
+		auto: 3000,
+		callback: function(){
+			var lis = $(this.element).next("ol").children();
+			lis.removeClass("on").eq(this.index).addClass("on");
+		}
+	});
+});
+</script> 
+     <!-- End SlidesJS Required --> 
+    </div> 
+   </div> 
+   <ul class="telnav clr"> 
+    <a href="updateLog.html" onclick="tongji(113905,0);" class="nav1"> 
+     <li> 
+	      <div class="icon_w"> 
+	       <div class="icon">  
+	        <img src="img/lib.png" class="contentimgcl" width="100%" /> 
+	       </div> 
+	      </div> <span>Library</span> 
+	      <p>This is our unit III library!!!</p> 
+     </li> 
+    </a> 
+    <a href="searchBook.jsp" onclick="tongji(113906,0);" class="nav2"> 
+    <li> 
+      <div class="icon_w"> 
+       <div class="icon">  
+        <img src="img/icon02.png" /> 
+       </div> 
+      </div> 
+      <span>借阅</span> 
+      <p>查找，借阅，归还</p> 
+     </li> 
+    </a> 
+    <a href="#" onclick="tongji(113907,0);" class="nav3"> 
+     <li> 
+      <div class="icon_w"> 
+       <div class="icon"> 
+        <img src="img/icon03.png" class="contentimgcl" width="100%" /> 
+       </div> 
+      </div> 
+      <span>评论</span> 
+      <p>留下你的足迹，与来者相交</p> 
+     </li> 
+    </a> 
+    <a href="#" onclick="tongji(113908,0);" class="nav4"> 
+     <li> 
+      <div class="icon_w"> 
+       <div class="icon">  
+        <img src="img/icon04.jpg" class="contentimgcl" width="100%" /> 
+       </div> 
+      </div> 
+      <span>推荐书籍</span> 
+      <p>好书要分享</p> 
+     </li> 
+    </a> 
+   </ul> 
+   <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script> 
+   <script type="text/javascript" src="http://static.dodoca.com/js/wxsharejs.js?v=1.4"></script>
+   <script type="text/javascript" src="http://static.dodoca.com/js/jquery-1.10.2.min.js"></script> 
+   <!-- <script type="text/javascript" src="/www/js/wxsharejs.js"></script> --> 
+   <script type="text/javascript">
+
+	var tongjitype = $.trim();
+	var uid = $.trim(7291);
+	function tongji(id,type){
+		$.ajax({
+			url:"/7291/phonewebsite/tongji",
+			type:"post",
+			async:false,
+			data:{'id':id,'type':type,'tongjitype':tongjitype,'uid':uid}		
+		})
+	}
+	var fx_describefenxiang = "";
+	wx_share_out('台湾生活广场','',fx_describefenxiang);
+</script>
+   <a href="/phone/websiteofficial?uid=7291"> 
+    <footer>
+      懒人模板提供服务 
+    </footer> </a> 
+   <div class="blankwhite" style="height:30px;"></div> 
+   <script>
+
+$(function(){
+	if (typeof WeixinJSBridge == "undefined"){
+		if( document.addEventListener ){
+			document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+		}else if (document.attachEvent){
+			document.attachEvent('WeixinJSBridgeReady', onBridgeReady); 
+			document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+		}
+	}else{
+		onBridgeReady();
+	}
+
+	var shareTitle = '台湾生活广场';
+	var imgUrl = "";
+	var descContent = $("#div_fx_describe").text();
+	var urllink = "new.dodoca.com/7291/phonewebsite/website?id=22327#mp.weixin.qq.com";
+	wx_share_out('7291',shareTitle,imgUrl,descContent,urllink);
+})
+
+function onBridgeReady(){
+     WeixinJSBridge.call('showOptionMenu');
+}
+</script> 
+   <div id="div_fx_describe" style="display:none;"></div> 
+   <script type="text/javascript">
+	</script>   
+  </div>
+ </body>
 </html>
